@@ -68,13 +68,29 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-class Ship {
+class Vessel {
     constructor (size) {
         this.size = size;
     }
+
+    heading (heading) {
+	this._heading = heading;
+    }
+
+    // returns an array of coordinates which this vessel occupies
+    coords () {
+	var heading = this._heading;
+	if(!heading) {
+	    console.log("vessel has no heading");
+	    return [];
+	}
+
+	return [this._heading.coordinate()];
+    }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = Ship;
+/* harmony export (immutable) */ __webpack_exports__["a"] = Vessel;
 ;
+
 
 /***/ }),
 /* 1 */
@@ -82,20 +98,177 @@ class Ship {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__fleet__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vessels_battleship__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vessels_carrier__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__heading__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__coordinate__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__direction__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__board__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__fleet__ = __webpack_require__(10);
 
 
-var size = 24;
 
-var myboard    = new __WEBPACK_IMPORTED_MODULE_0__board__["a" /* default */](size, size, "myboard");
-var theirboard = new __WEBPACK_IMPORTED_MODULE_0__board__["a" /* default */](size, size, "theirboard");
+
+
+
+
+
+
+
+
+var boardsize  = 24;
+var myboard    = new __WEBPACK_IMPORTED_MODULE_7__board__["a" /* default */](boardsize, boardsize, "myboard");
+var theirboard = new __WEBPACK_IMPORTED_MODULE_7__board__["a" /* default */](boardsize, boardsize, "theirboard");
+
 myboard.draw();
 theirboard.draw();
+
+var myfleet = new __WEBPACK_IMPORTED_MODULE_8__fleet__["a" /* default */]();
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_0__vessels_battleship__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_1__vessels_carrier__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* default */]);
+console.log(myfleet);
+
+myfleet.deploy('Battleship', new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](5,5), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('ne')));
+
+myboard.deploy(myfleet);
 
 
 /***/ }),
 /* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vessel__ = __webpack_require__(0);
+
+
+class Battleship extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */] {
+    constructor () {
+        super(5);
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Battleship;
+
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vessel__ = __webpack_require__(0);
+
+
+class Carrier extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */] {
+    constructor () {
+        super(4);
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Carrier;
+
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vessel__ = __webpack_require__(0);
+
+
+class Destroyer extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */] {
+    constructor () {
+        super(3);
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Destroyer;
+
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vessel__ = __webpack_require__(0);
+
+
+class Submarine extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */] {
+    constructor () {
+        super(2);
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Submarine;
+
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class Heading {
+    constructor (coordinate, direction) {
+        this._coordinate = coordinate;
+        this._direction  = direction;
+    }
+
+    coordinate () {
+	return this._coordinate;
+    }
+
+    direction () {
+	return this._direction;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Heading;
+
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class Coordinate {
+    constructor (x, y) {
+        this._x = x;
+        this._y = y;
+    }
+
+    x () {
+	return this._x;
+    }
+
+    y () {
+	return this._y;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Coordinate;
+
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class Direction {
+    constructor (direction) {
+        this.direction = direction; // n, ne, e, se, s, sw, w, nw
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Direction;
+
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -107,129 +280,102 @@ class Board {
         this.id     = id;
     }
 
-    draw (id) {
-        if(!id) {
-            id = this.id;
-        }
+    deploy (fleet) {
+	this.fleet = fleet;
+	this.refresh();
+    }
 
-        if(!id) {
-            console.log(`element id not given`);
-            return;
-        }
+    draw () {
+        var container       = document.createElement("div");
+	container.className = "board";
 
-        var table=document.createElement("table");
         for (var y=0; y<this.height; y++) {
-            var tr=document.createElement("tr");
+            var row       = document.createElement("div");
+	    row.dataset.y = y;
+	    row.className = "row"
+
             for (var x=0; x<this.width; x++) {
-                var td=document.createElement("td");
-                tr.appendChild(td);
+                var col       = document.createElement("div");
+		col.dataset.x = x;
+		col.dataset.y = y;
+		col.className = "cell";
+
+                row.appendChild(col);
             }
-            table.appendChild(tr);
+            container.appendChild(row);
         }
-        var element = document.getElementById(id);
+
+        var element = document.getElementById(this.id);
         if(!element) {
-            console.log(`element ${id} not found`);
+            console.log(`element ${this.id} not found`);
             return;
         }
-        element.appendChild(table);
+        element.appendChild(container);
+	this.refresh();
+    }
+
+    refresh () {
+	var fleet = this.fleet;
+	var id    = this.id;
+
+	if(!fleet) {
+	    console.log("no fleet deployed");
+	    return;
+	}
+
+	fleet.vessels().forEach(function (o) {
+	    console.log(o);
+	    o.coords().forEach(function (c) {
+		console.log(c);
+		console.log("mark ", c.x(), ",", c.y());
+		var cell = document.querySelector("#"+id+" .cell[data-x='"+c.x()+"'][data-y='"+c.y()+"']");
+		var cn   = cell.className.split(" ");
+		cn.push("hot");
+		cell.className=cn.join(" ");
+	    });
+	});
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Board;
 
 
+
 /***/ }),
-/* 3 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__battleship__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__carrier__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__destroyer__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__submarine__ = __webpack_require__(7);
-
-
-
-
-
 class Fleet {
     constructor () {
-        this.harbour = [
-            new __WEBPACK_IMPORTED_MODULE_0__battleship__["a" /* default */],
-            new __WEBPACK_IMPORTED_MODULE_1__carrier__["a" /* default */],
-            new __WEBPACK_IMPORTED_MODULE_2__destroyer__["a" /* default */], new __WEBPACK_IMPORTED_MODULE_2__destroyer__["a" /* default */],
-            new __WEBPACK_IMPORTED_MODULE_3__submarine__["a" /* default */], new __WEBPACK_IMPORTED_MODULE_3__submarine__["a" /* default */],
-            ]
+        this._vessels = [];
+    }
+
+    commission (vessel) {
+	this._vessels.push(vessel);
+    }
+
+    vessels () {
+	return this._vessels;
+    }
+
+    deploy (vesseltype, heading) {
+	var undeployed_vessels = this._vessels.filter(function (o) {
+
+	    if (o.constructor.name === vesseltype) {
+		return 1;
+	    }
+	});
+
+	if(undeployed_vessels.length === 0) {
+	    console.log(`no undeployed vessels of type ${vesseltype}`);
+	    return;
+	}
+
+	undeployed_vessels[0].heading(heading);
     }
 }
-/* unused harmony export default */
+/* harmony export (immutable) */ __webpack_exports__["a"] = Fleet;
 ;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ship__ = __webpack_require__(0);
-
-
-class Battleship extends __WEBPACK_IMPORTED_MODULE_0__ship__["a" /* default */] {
-    constructor () {
-        super(5);
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Battleship;
-
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ship__ = __webpack_require__(0);
-
-
-class Carrier extends __WEBPACK_IMPORTED_MODULE_0__ship__["a" /* default */] {
-    constructor () {
-        super(4);
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Carrier;
-
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ship__ = __webpack_require__(0);
-
-
-class Destroyer extends __WEBPACK_IMPORTED_MODULE_0__ship__["a" /* default */] {
-    constructor () {
-        super(3);
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Destroyer;
-
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ship__ = __webpack_require__(0);
-
-
-class Submarine extends __WEBPACK_IMPORTED_MODULE_0__ship__["a" /* default */] {
-    constructor () {
-        super(2);
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Submarine;
-
 
 
 /***/ })

@@ -1,8 +1,30 @@
+import Battleship from "./vessels/battleship";
+import Carrier    from "./vessels/carrier";
+import Destroyer  from "./vessels/destroyer";
+import Submarine  from "./vessels/submarine";
+import Heading    from "./heading";
+import Coordinate from "./coordinate";
+import Direction  from "./direction";
+
 import Board from "./board";
 import Fleet from "./fleet";
-var size = 24;
 
-var myboard    = new Board(size, size, "myboard");
-var theirboard = new Board(size, size, "theirboard");
+var boardsize  = 24;
+var myboard    = new Board(boardsize, boardsize, "myboard");
+var theirboard = new Board(boardsize, boardsize, "theirboard");
+
 myboard.draw();
 theirboard.draw();
+
+var myfleet = new Fleet();
+myfleet.commission(new Battleship);
+myfleet.commission(new Carrier);
+myfleet.commission(new Destroyer);
+myfleet.commission(new Destroyer);
+myfleet.commission(new Submarine);
+myfleet.commission(new Submarine);
+console.log(myfleet);
+
+myfleet.deploy('Battleship', new Heading(new Coordinate(5,5), new Direction('ne')));
+
+myboard.deploy(myfleet);

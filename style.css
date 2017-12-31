@@ -1,0 +1,26 @@
+body {
+    background: steelblue;
+    color: cornflowerblue;
+}
+
+h1 {
+    text-align: center;
+    text-transform: uppercase;
+    font-family: arial;
+}
+
+.cell {
+    border: 1px solid #000;
+    width: 10px;
+    height: 10px;
+    float: left;
+}
+
+.cell.hot {
+    background: red;
+}
+
+.board {
+    float: left;
+    padding: 2em;
+}
