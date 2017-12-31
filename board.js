@@ -37,7 +37,7 @@ export default class Board {
             return;
         }
         element.appendChild(container);
-	this.refresh();
+//	this.refresh();
     }
 
     refresh () {
@@ -50,10 +50,7 @@ export default class Board {
 	}
 
 	fleet.vessels().forEach(function (o) {
-	    console.log(o);
 	    o.coords().forEach(function (c) {
-		console.log(c);
-		console.log("mark ", c.x(), ",", c.y());
 		var cell = document.querySelector("#"+id+" .cell[data-x='"+c.x()+"'][data-y='"+c.y()+"']");
 		var cn   = cell.className.split(" ");
 		cn.push("hot");

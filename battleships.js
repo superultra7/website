@@ -19,12 +19,12 @@ theirboard.draw();
 var myfleet = new Fleet();
 myfleet.commission(new Battleship);
 myfleet.commission(new Carrier);
-myfleet.commission(new Destroyer);
-myfleet.commission(new Destroyer);
-myfleet.commission(new Submarine);
-myfleet.commission(new Submarine);
-console.log(myfleet);
+//myfleet.commission(new Destroyer);
+//myfleet.commission(new Destroyer);
+//myfleet.commission(new Submarine);
+//myfleet.commission(new Submarine);
 
-myfleet.deploy('Battleship', new Heading(new Coordinate(5,5), new Direction('ne')));
+myfleet.deploy('Battleship', new Heading(new Coordinate(5,5),   new Direction('nw')));
+myfleet.deploy('Carrier',    new Heading(new Coordinate(20,20), new Direction('s')));
 
 myboard.deploy(myfleet);

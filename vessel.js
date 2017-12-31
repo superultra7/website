@@ -4,17 +4,29 @@ export default class Vessel {
     }
 
     heading (heading) {
-	this._heading = heading;
+	if(heading) {
+	    this._heading = heading;
+	}
+
+	return this._heading;
     }
 
     // returns an array of coordinates which this vessel occupies
     coords () {
-	var heading = this._heading;
+	var heading = this.heading();
 	if(!heading) {
-	    console.log("vessel has no heading");
+	    console.log(this.constructor.name, "has no heading");
 	    return [];
 	}
 
-	return [this._heading.coordinate()];
+	var start_coordinate = heading.coordinate();
+	var delta  = heading.direction().delta();
+	var coords = [];
+
+	for (var i=0; i<this.size; i++) {
+	    coords.push(this._heading.coordinate().move(delta, i));
+	}
+
+	return coords;
     }
 };

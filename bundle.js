@@ -74,18 +74,30 @@ class Vessel {
     }
 
     heading (heading) {
-	this._heading = heading;
+	if(heading) {
+	    this._heading = heading;
+	}
+
+	return this._heading;
     }
 
     // returns an array of coordinates which this vessel occupies
     coords () {
-	var heading = this._heading;
+	var heading = this.heading();
 	if(!heading) {
-	    console.log("vessel has no heading");
+	    console.log(this.constructor.name, "has no heading");
 	    return [];
 	}
 
-	return [this._heading.coordinate()];
+	var start_coordinate = heading.coordinate();
+	var delta  = heading.direction().delta();
+	var coords = [];
+
+	for (var i=0; i<this.size; i++) {
+	    coords.push(this._heading.coordinate().move(delta, i));
+	}
+
+	return coords;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Vessel;
@@ -128,13 +140,13 @@ theirboard.draw();
 var myfleet = new __WEBPACK_IMPORTED_MODULE_8__fleet__["a" /* default */]();
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_0__vessels_battleship__["a" /* default */]);
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_1__vessels_carrier__["a" /* default */]);
-myfleet.commission(new __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__["a" /* default */]);
-myfleet.commission(new __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__["a" /* default */]);
-myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* default */]);
-myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* default */]);
-console.log(myfleet);
+//myfleet.commission(new Destroyer);
+//myfleet.commission(new Destroyer);
+//myfleet.commission(new Submarine);
+//myfleet.commission(new Submarine);
 
-myfleet.deploy('Battleship', new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](5,5), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('ne')));
+myfleet.deploy('Battleship', new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](5,5),   new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('nw')));
+myfleet.deploy('Carrier',    new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](20,20), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
 
 myboard.deploy(myfleet);
 
@@ -186,7 +198,7 @@ class Destroyer extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */]
         super(3);
     }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = Destroyer;
+/* unused harmony export default */
 
 
 
@@ -203,7 +215,7 @@ class Submarine extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */]
         super(2);
     }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = Submarine;
+/* unused harmony export default */
 
 
 
@@ -248,6 +260,10 @@ class Coordinate {
     y () {
 	return this._y;
     }
+
+    move (delta, magnitude) {
+	return new Coordinate(this._x + (delta[0] * magnitude), this._y + (delta[1] * magnitude));
+    }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Coordinate;
 
@@ -258,9 +274,27 @@ class Coordinate {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+const mapping = {
+    "n":  [0,   1],
+    "s":  [0,  -1],
+    "e":  [1,   0],
+    "w":  [-1,  0],
+    "nw": [-1, -1],
+};
+
 class Direction {
     constructor (direction) {
-        this.direction = direction; // n, ne, e, se, s, sw, w, nw
+        this._direction = direction; // n, ne, e, se, s, sw, w, nw
+    }
+
+    delta () {
+	var delta = mapping[this._direction];
+	if(!delta) {
+	    console.log(`no mapping for direction ${this._direction}`);
+	    return [0,0];
+	}
+
+	return delta;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Direction;
@@ -311,7 +345,7 @@ class Board {
             return;
         }
         element.appendChild(container);
-	this.refresh();
+//	this.refresh();
     }
 
     refresh () {
@@ -324,10 +358,7 @@ class Board {
 	}
 
 	fleet.vessels().forEach(function (o) {
-	    console.log(o);
 	    o.coords().forEach(function (c) {
-		console.log(c);
-		console.log("mark ", c.x(), ",", c.y());
 		var cell = document.querySelector("#"+id+" .cell[data-x='"+c.x()+"'][data-y='"+c.y()+"']");
 		var cn   = cell.className.split(" ");
 		cn.push("hot");
