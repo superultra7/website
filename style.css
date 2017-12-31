@@ -1,0 +1,52 @@
+body {
+    background: steelblue;
+    color: cornflowerblue;
+}
+
+h1 {
+    text-align: center;
+    text-transform: uppercase;
+    font-family: arial;
+}
+
+.cell {
+    border: 1px solid #000;
+    width: 10px;
+    height: 10px;
+    float: left;
+}
+
+.cell.hot {
+    background: red;
+}
+
+.board {
+    float: left;
+    padding: 2em;
+}
+
+#myfleet {
+    background: #fff;
+    color: #000;
+    font-family: helvetica;
+    text-transform: uppercase;
+    float: left;
+    width: 340px;
+}
+
+#myfleet ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 4px;
+}
+
+#myfleet ul li {
+    margin: 2px 0;
+    padding: 2px;
+}
+
+.damage_none     { background: green; }
+.damage_light    { background: yellow; }
+.damage_moderate { background: orange; }
+.damage_heavy    { background: red; }
+.damage_total    { text-decoration: line-through; color: #ccc; }
