@@ -76,56 +76,62 @@ class Vessel {
     }
 
     heading (heading) {
-	if(heading) {
-	    this._heading = heading;
-	    this.trigger('change', 'heading'); // trigger a redraw
-	}
+        if(heading) {
+            this._heading = heading;
+            this.trigger('change', 'heading'); // trigger a redraw
+        }
 
-	return this._heading;
+        return this._heading;
     }
 
     type () {
-	return this.constructor.name;
+        return this.constructor.name;
     }
 
     deployed () {
-	return this._heading ? 1 : 0;
+        return this._heading ? 1 : 0;
     }
 
     perc_damage () {
-	return 100 * (this._damage / this._size);
+        return 100 * (this._damage / this._size);
     }
 
     bind (type, func) {
-	if(!this._events[type]) {
-	    this._events[type] = new Array();
-	}
-	this._events[type].push(func);
+        if(!this._events[type]) {
+            this._events[type] = new Array();
+        }
+        this._events[type].push(func);
     }
 
     trigger (type, args) {
-	if(this._events[type]) {
-	    this._events[type].forEach(function (f) { f(args); });
-	}
+        if(this._events[type]) {
+            this._events[type].forEach(function (f) { f(args); });
+        }
+    }
+
+    hit (damage) {
+        this._damage += damage;
+        this.trigger('change');
     }
 
     // returns an array of coordinates which this vessel occupies
     coords () {
-	var heading = this.heading();
-	if(!heading) {
-	    console.log(this.constructor.name, "has no heading");
-	    return [];
-	}
+        var heading = this.heading();
 
-	var start_coordinate = heading.coordinate();
-	var delta  = heading.direction().delta();
-	var coords = [];
+        if(!heading) {
+            console.log(this.constructor.name, "has no heading");
+            return [];
+        }
 
-	for (var i=0; i<this._size; i++) {
-	    coords.push(this._heading.coordinate().move(delta, i));
-	}
+        var start_coordinate = heading.coordinate();
+        var delta  = heading.direction().delta();
+        var coords = [];
 
-	return coords;
+        for (var i=0; i<this._size; i++) {
+            coords.push(this._heading.coordinate().move(delta, i));
+        }
+
+        return coords;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Vessel;
@@ -318,11 +324,11 @@ class Heading {
     }
 
     coordinate () {
-	return this._coordinate;
+        return this._coordinate;
     }
 
     direction () {
-	return this._direction;
+        return this._direction;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Heading;
@@ -341,15 +347,15 @@ class Coordinate {
     }
 
     x () {
-	return this._x;
+        return this._x;
     }
 
     y () {
-	return this._y;
+        return this._y;
     }
 
     move (delta, magnitude) {
-	return new Coordinate(this._x + (delta[0] * magnitude), this._y + (delta[1] * magnitude));
+        return new Coordinate(this._x + (delta[0] * magnitude), this._y + (delta[1] * magnitude));
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Coordinate;
@@ -375,13 +381,13 @@ class Direction {
     }
 
     delta () {
-	var delta = mapping[this._direction];
-	if(!delta) {
-	    console.log(`no mapping for direction ${this._direction}`);
-	    return [0,0];
-	}
+        var delta = mapping[this._direction];
+        if(!delta) {
+            console.log(`no mapping for direction ${this._direction}`);
+            return [0, 0];
+        }
 
-	return delta;
+        return delta;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Direction;
@@ -402,12 +408,12 @@ class Board {
     }
 
     deploy (fleet) {
-	this.fleet = fleet;
-	this.refresh();
+        this.fleet = fleet;
+        this.refresh();
     }
 
     mark_cell (x, y, className) {
-        var id = this.id;
+        var id   = this.id;
         var cell = document.querySelector(`#${id} .cell[data-x='${x}'][data-y='${y}']`);
 		if(!cell) {
             console.log(`no cell at ${x}, ${y}`);
@@ -445,11 +451,10 @@ class Board {
             return;
         }
         element.appendChild(container);
-//	this.refresh();
     }
 
     refresh () {
-        var that = this;
+        var that  = this;
         var fleet = this.fleet;
 
         if(!fleet) {
@@ -465,7 +470,21 @@ class Board {
     }
 
     fire (x, y) {
-        this.mark_cell(x, y, "dead")
+        var fleet = this.fleet;
+        var vessels = fleet.vessels();
+        for (var vi=0; vi<vessels.length; vi++) {
+            var coords = vessels[vi].coords();
+            for (var ci=0; ci<coords.length; ci++) {
+                var c = coords[ci];
+                if(c.x() == x && c.y() == y) {
+                    vessels[vi].hit(1);
+                    return this.mark_cell(x, y, "hit");
+                }
+            }
+        }
+
+        this.mark_cell(x, y, "miss");
+        
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Board;

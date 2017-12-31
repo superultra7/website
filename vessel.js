@@ -6,55 +6,61 @@ export default class Vessel {
     }
 
     heading (heading) {
-	if(heading) {
-	    this._heading = heading;
-	    this.trigger('change', 'heading'); // trigger a redraw
-	}
+        if(heading) {
+            this._heading = heading;
+            this.trigger('change', 'heading'); // trigger a redraw
+        }
 
-	return this._heading;
+        return this._heading;
     }
 
     type () {
-	return this.constructor.name;
+        return this.constructor.name;
     }
 
     deployed () {
-	return this._heading ? 1 : 0;
+        return this._heading ? 1 : 0;
     }
 
     perc_damage () {
-	return 100 * (this._damage / this._size);
+        return 100 * (this._damage / this._size);
     }
 
     bind (type, func) {
-	if(!this._events[type]) {
-	    this._events[type] = new Array();
-	}
-	this._events[type].push(func);
+        if(!this._events[type]) {
+            this._events[type] = new Array();
+        }
+        this._events[type].push(func);
     }
 
     trigger (type, args) {
-	if(this._events[type]) {
-	    this._events[type].forEach(function (f) { f(args); });
-	}
+        if(this._events[type]) {
+            this._events[type].forEach(function (f) { f(args); });
+        }
+    }
+
+    hit (damage) {
+        this._damage += damage;
+        this.trigger('change');
     }
 
     // returns an array of coordinates which this vessel occupies
     coords () {
-	var heading = this.heading();
-	if(!heading) {
-	    console.log(this.constructor.name, "has no heading");
-	    return [];
-	}
+        var heading = this.heading();
 
-	var start_coordinate = heading.coordinate();
-	var delta  = heading.direction().delta();
-	var coords = [];
+        if(!heading) {
+            console.log(this.constructor.name, "has no heading");
+            return [];
+        }
 
-	for (var i=0; i<this._size; i++) {
-	    coords.push(this._heading.coordinate().move(delta, i));
-	}
+        var start_coordinate = heading.coordinate();
+        var delta  = heading.direction().delta();
+        var coords = [];
 
-	return coords;
+        for (var i=0; i<this._size; i++) {
+            coords.push(this._heading.coordinate().move(delta, i));
+        }
+
+        return coords;
     }
 };

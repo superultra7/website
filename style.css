@@ -10,7 +10,7 @@ h1 {
 }
 
 .cell {
-    border: 1px solid #000;
+    border: 1px solid #eee;
     width: 10px;
     height: 10px;
     float: left;
@@ -20,21 +20,29 @@ h1 {
     background: red;
 }
 
-.cell.dead {
+.cell.hit {
     background: black !important;
 }
 
-.board {
+.cell.miss {
+    background: #ccc !important;
+}
+
+#boardcontainer {
+    margin: 0 auto;
+    width: 1024px;
+}
+
+.board, #myfleet {
     float: left;
-    padding: 2em;
+    margin: 1em;
+    background: #fff;
 }
 
 #myfleet {
-    background: #fff;
     color: #000;
     font-family: helvetica;
     text-transform: uppercase;
-    float: left;
     width: 340px;
 }
 

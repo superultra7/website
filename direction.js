@@ -12,12 +12,12 @@ export default class Direction {
     }
 
     delta () {
-	var delta = mapping[this._direction];
-	if(!delta) {
-	    console.log(`no mapping for direction ${this._direction}`);
-	    return [0,0];
-	}
+        var delta = mapping[this._direction];
+        if(!delta) {
+            console.log(`no mapping for direction ${this._direction}`);
+            return [0, 0];
+        }
 
-	return delta;
+        return delta;
     }
 }

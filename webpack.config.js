@@ -1,6 +1,6 @@
 module.exports = {
     entry: './battleships.js',
     output: {
-	filename: 'bundle.js'
+        filename: 'bundle.js'
     }
 };

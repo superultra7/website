@@ -5,10 +5,10 @@ export default class Heading {
     }
 
     coordinate () {
-	return this._coordinate;
+        return this._coordinate;
     }
 
     direction () {
-	return this._direction;
+        return this._direction;
     }
 }

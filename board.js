@@ -7,12 +7,12 @@ export default class Board {
     }
 
     deploy (fleet) {
-	this.fleet = fleet;
-	this.refresh();
+        this.fleet = fleet;
+        this.refresh();
     }
 
     mark_cell (x, y, className) {
-        var id = this.id;
+        var id   = this.id;
         var cell = document.querySelector(`#${id} .cell[data-x='${x}'][data-y='${y}']`);
 		if(!cell) {
             console.log(`no cell at ${x}, ${y}`);
@@ -50,11 +50,10 @@ export default class Board {
             return;
         }
         element.appendChild(container);
-//	this.refresh();
     }
 
     refresh () {
-        var that = this;
+        var that  = this;
         var fleet = this.fleet;
 
         if(!fleet) {
@@ -70,6 +69,20 @@ export default class Board {
     }
 
     fire (x, y) {
-        this.mark_cell(x, y, "dead")
+        var fleet = this.fleet;
+        var vessels = fleet.vessels();
+        for (var vi=0; vi<vessels.length; vi++) {
+            var coords = vessels[vi].coords();
+            for (var ci=0; ci<coords.length; ci++) {
+                var c = coords[ci];
+                if(c.x() == x && c.y() == y) {
+                    vessels[vi].hit(1);
+                    return this.mark_cell(x, y, "hit");
+                }
+            }
+        }
+
+        this.mark_cell(x, y, "miss");
+        
     }
 }
