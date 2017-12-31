@@ -52,6 +52,11 @@ export default class Board {
 	fleet.vessels().forEach(function (o) {
 	    o.coords().forEach(function (c) {
 		var cell = document.querySelector("#"+id+" .cell[data-x='"+c.x()+"'][data-y='"+c.y()+"']");
+		if(!cell) {
+		    console.log("no cell at", c.x(), c.y());
+		    return;
+		}
+
 		var cn   = cell.className.split(" ");
 		cn.push("hot");
 		cell.className=cn.join(" ");

@@ -70,13 +70,14 @@
 "use strict";
 class Vessel {
     constructor (size) {
-        this._size  = size;
-	this._state = "undamaged";
+        this._size   = size;
+	this._damage = 0;
     }
 
     heading (heading) {
 	if(heading) {
 	    this._heading = heading;
+	    this.trigger('change', 'heading'); // trigger a redraw
 	}
 
 	return this._heading;
@@ -90,8 +91,8 @@ class Vessel {
 	return this._heading ? 1 : 0;
     }
 
-    state () {
-	return this._state;
+    perc_damage () {
+	return 100 * (this._damage / this._size);
     }
 
     // returns an array of coordinates which this vessel occupies
@@ -151,6 +152,7 @@ myboard.draw();
 theirboard.draw();
 
 var myfleet = new __WEBPACK_IMPORTED_MODULE_8__fleet__["a" /* default */]("myfleet");
+
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_0__vessels_battleship__["a" /* default */]);
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_1__vessels_carrier__["a" /* default */]);
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__["a" /* default */]);
@@ -160,7 +162,10 @@ myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* d
 
 myfleet.deploy('Battleship', new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](5,5),   new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('nw')));
 myfleet.deploy('Carrier',    new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](20,20), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
-myfleet.deploy('Carrier',    new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](20,20), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
+myfleet.deploy('Destroyer',  new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](20,5),  new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
+myfleet.deploy('Destroyer',  new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](10,10), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
+myfleet.deploy('Submarine',  new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](8,0),   new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('n')));
+myfleet.deploy('Submarine',  new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](10,20), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
 
 myboard.deploy(myfleet);
 
@@ -376,6 +381,11 @@ class Board {
 	fleet.vessels().forEach(function (o) {
 	    o.coords().forEach(function (c) {
 		var cell = document.querySelector("#"+id+" .cell[data-x='"+c.x()+"'][data-y='"+c.y()+"']");
+		if(!cell) {
+		    console.log("no cell at", c.x(), c.y());
+		    return;
+		}
+
 		var cn   = cell.className.split(" ");
 		cn.push("hot");
 		cell.className=cn.join(" ");
@@ -400,6 +410,10 @@ class Fleet {
 
     commission (vessel) {
 	this._vessels.push(vessel);
+	var that = this;
+	vessel.addEventListener('change', function (e) {
+	    that.draw();
+	});
     }
 
     vessels () {
@@ -425,8 +439,33 @@ class Fleet {
     draw () {
 	var ul = document.createElement("ul");
 	this._vessels.forEach(function (o) {
-	    var li       = document.createElement("li");
-	    li.innerText = o.type() + " " + (o.deployed() ? "deployed" : "undeployed") + " " + o.state();
+	    var li        = document.createElement("li");
+	    var damage    = o.perc_damage();
+	    var className = "damage_none";
+
+	    if(damage > 10) {
+		className = "damage_light";
+	    }
+
+	    if(damage > 30) {
+		className = "damage_moderate";
+	    }
+
+	    if(damage > 60) {
+		className = "damage_heavy";
+	    }
+
+	    if(damage >= 100) {
+		className = "damage_total";
+	    }
+
+	    li.className = className;
+	    li.innerText = [
+		o.type(),
+		(o.deployed() ? "deployed" : "undeployed"),
+		o.perc_damage() + "% damage"
+	    ].join(" ");
+
 	    ul.appendChild(li);
 	});
 	document.getElementById(this.id).appendChild(ul);

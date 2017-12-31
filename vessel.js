@@ -1,12 +1,14 @@
 export default class Vessel {
     constructor (size) {
-        this._size  = size;
-	this._state = "undamaged";
+        this._size   = size;
+	this._damage = 0;
+	this.events = {};
     }
 
     heading (heading) {
 	if(heading) {
 	    this._heading = heading;
+	    this.trigger('change', 'heading'); // trigger a redraw
 	}
 
 	return this._heading;
@@ -20,8 +22,16 @@ export default class Vessel {
 	return this._heading ? 1 : 0;
     }
 
-    state () {
-	return this._state;
+    perc_damage () {
+	return 100 * (this._damage / this._size);
+    }
+
+    bind (type, func) {
+	this.events[type] ||= new Array();
+	this.events[type].push(func);
+    }
+
+    trigger (type, args) {
     }
 
     // returns an array of coordinates which this vessel occupies
