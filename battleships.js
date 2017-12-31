@@ -2,6 +2,8 @@ import Battleship from "./vessels/battleship";
 import Carrier    from "./vessels/carrier";
 import Destroyer  from "./vessels/destroyer";
 import Submarine  from "./vessels/submarine";
+import Frigate  from "./vessels/frigate";
+import Lifeboat  from "./vessels/lifeboat";
 import Heading    from "./heading";
 import Coordinate from "./coordinate";
 import Direction  from "./direction";
@@ -24,6 +26,8 @@ myfleet.commission(new Destroyer);
 myfleet.commission(new Destroyer);
 myfleet.commission(new Submarine);
 myfleet.commission(new Submarine);
+myfleet.commission(new Frigate);
+myfleet.commission(new Lifeboat);
 
 myfleet.deploy('Battleship', new Heading(new Coordinate(5,5),   new Direction('nw')));
 myfleet.deploy('Carrier',    new Heading(new Coordinate(20,20), new Direction('s')));
@@ -31,6 +35,9 @@ myfleet.deploy('Destroyer',  new Heading(new Coordinate(20,5),  new Direction('s
 myfleet.deploy('Destroyer',  new Heading(new Coordinate(10,10), new Direction('s')));
 myfleet.deploy('Submarine',  new Heading(new Coordinate(8,0),   new Direction('n')));
 myfleet.deploy('Submarine',  new Heading(new Coordinate(10,20), new Direction('s')));
+myfleet.deploy('Frigate', new Heading(new Coordinate(5,5),   new Direction('e')));
+myfleet.deploy('Lifeboat',    new Heading(new Coordinate(13,1), new Direction('w')));
+
 
 myboard.deploy(myfleet);
 

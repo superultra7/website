@@ -142,11 +142,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vessels_carrier__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__heading__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__coordinate__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__direction__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__board__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__fleet__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__vessels_frigate__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__vessels_lifeboat__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__heading__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__coordinate__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__direction__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__board__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__fleet__ = __webpack_require__(12);
+
+
 
 
 
@@ -159,13 +163,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 var boardsize  = 24;
-var myboard    = new __WEBPACK_IMPORTED_MODULE_7__board__["a" /* default */](boardsize, boardsize, "myboard");
-var theirboard = new __WEBPACK_IMPORTED_MODULE_7__board__["a" /* default */](boardsize, boardsize, "theirboard");
+var myboard    = new __WEBPACK_IMPORTED_MODULE_9__board__["a" /* default */](boardsize, boardsize, "myboard");
+var theirboard = new __WEBPACK_IMPORTED_MODULE_9__board__["a" /* default */](boardsize, boardsize, "theirboard");
 
 myboard.draw();
 theirboard.draw();
 
-var myfleet = new __WEBPACK_IMPORTED_MODULE_8__fleet__["a" /* default */]("myfleet");
+var myfleet = new __WEBPACK_IMPORTED_MODULE_10__fleet__["a" /* default */]("myfleet");
 
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_0__vessels_battleship__["a" /* default */]);
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_1__vessels_carrier__["a" /* default */]);
@@ -173,13 +177,18 @@ myfleet.commission(new __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__["a" /* d
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__["a" /* default */]);
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* default */]);
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_4__vessels_frigate__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_5__vessels_lifeboat__["a" /* default */]);
 
-myfleet.deploy('Battleship', new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](5,5),   new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('nw')));
-myfleet.deploy('Carrier',    new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](20,20), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
-myfleet.deploy('Destroyer',  new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](20,5),  new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
-myfleet.deploy('Destroyer',  new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](10,10), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
-myfleet.deploy('Submarine',  new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](8,0),   new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('n')));
-myfleet.deploy('Submarine',  new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](10,20), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
+myfleet.deploy('Battleship', new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](5,5),   new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('nw')));
+myfleet.deploy('Carrier',    new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](20,20), new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('s')));
+myfleet.deploy('Destroyer',  new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](20,5),  new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('s')));
+myfleet.deploy('Destroyer',  new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](10,10), new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('s')));
+myfleet.deploy('Submarine',  new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](8,0),   new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('n')));
+myfleet.deploy('Submarine',  new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](10,20), new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('s')));
+myfleet.deploy('Frigate', new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](5,5),   new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('e')));
+myfleet.deploy('Lifeboat',    new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](13,1), new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('w')));
+
 
 myboard.deploy(myfleet);
 
@@ -259,6 +268,40 @@ class Submarine extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */]
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vessel__ = __webpack_require__(0);
+
+
+class Frigate extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */] {
+    constructor () {
+        super(6);
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Frigate;
+
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vessel__ = __webpack_require__(0);
+
+
+class Lifeboat extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */] {
+    constructor () {
+        super(1);
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Lifeboat;
+
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 class Heading {
     constructor (coordinate, direction) {
         this._coordinate = coordinate;
@@ -278,7 +321,7 @@ class Heading {
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -305,7 +348,7 @@ class Coordinate {
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -337,7 +380,7 @@ class Direction {
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -412,7 +455,7 @@ class Board {
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
