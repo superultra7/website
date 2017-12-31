@@ -11,20 +11,33 @@ export default class Board {
 	this.refresh();
     }
 
+    mark_cell (x, y, className) {
+        var id = this.id;
+        var cell = document.querySelector(`#${id} .cell[data-x='${x}'][data-y='${y}']`);
+		if(!cell) {
+            console.log(`no cell at ${x}, ${y}`);
+            return;
+		}
+
+        var cn   = cell.className.split(" ");
+        cn.push(className);
+        cell.className = cn.join(" ");
+    }
+
     draw () {
         var container       = document.createElement("div");
-	container.className = "board";
+        container.className = "board";
 
         for (var y=0; y<this.height; y++) {
             var row       = document.createElement("div");
-	    row.dataset.y = y;
-	    row.className = "row"
+            row.dataset.y = y;
+            row.className = "row"
 
             for (var x=0; x<this.width; x++) {
                 var col       = document.createElement("div");
-		col.dataset.x = x;
-		col.dataset.y = y;
-		col.className = "cell";
+                col.dataset.x = x;
+                col.dataset.y = y;
+                col.className = "cell";
 
                 row.appendChild(col);
             }
@@ -41,26 +54,22 @@ export default class Board {
     }
 
     refresh () {
-	var fleet = this.fleet;
-	var id    = this.id;
+        var that = this;
+        var fleet = this.fleet;
 
-	if(!fleet) {
-	    console.log("no fleet deployed");
-	    return;
-	}
+        if(!fleet) {
+            console.log("no fleet deployed");
+            return;
+        }
 
-	fleet.vessels().forEach(function (o) {
-	    o.coords().forEach(function (c) {
-		var cell = document.querySelector("#"+id+" .cell[data-x='"+c.x()+"'][data-y='"+c.y()+"']");
-		if(!cell) {
-		    console.log("no cell at", c.x(), c.y());
-		    return;
-		}
+        fleet.vessels().forEach(function (o) {
+            o.coords().forEach(function (c) {
+                that.mark_cell(c.x(), c.y(), 'hot');
+            });
+        });
+    }
 
-		var cn   = cell.className.split(" ");
-		cn.push("hot");
-		cell.className=cn.join(" ");
-	    });
-	});
+    fire (x, y) {
+        this.mark_cell(x, y, "dead")
     }
 }

@@ -169,6 +169,15 @@ var theirboard = new __WEBPACK_IMPORTED_MODULE_9__board__["a" /* default */](boa
 myboard.draw();
 theirboard.draw();
 
+document
+    .getElementById('fire')
+    .onclick = function (e) {
+        var x=document.getElementById('x').value;
+        var y=document.getElementById('y').value;
+        myboard.fire(parseInt(x), parseInt(y));
+        return false;
+    };
+
 var myfleet = new __WEBPACK_IMPORTED_MODULE_10__fleet__["a" /* default */]("myfleet");
 
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_0__vessels_battleship__["a" /* default */]);
@@ -397,20 +406,33 @@ class Board {
 	this.refresh();
     }
 
+    mark_cell (x, y, className) {
+        var id = this.id;
+        var cell = document.querySelector(`#${id} .cell[data-x='${x}'][data-y='${y}']`);
+		if(!cell) {
+            console.log(`no cell at ${x}, ${y}`);
+            return;
+		}
+
+        var cn   = cell.className.split(" ");
+        cn.push(className);
+        cell.className = cn.join(" ");
+    }
+
     draw () {
         var container       = document.createElement("div");
-	container.className = "board";
+        container.className = "board";
 
         for (var y=0; y<this.height; y++) {
             var row       = document.createElement("div");
-	    row.dataset.y = y;
-	    row.className = "row"
+            row.dataset.y = y;
+            row.className = "row"
 
             for (var x=0; x<this.width; x++) {
                 var col       = document.createElement("div");
-		col.dataset.x = x;
-		col.dataset.y = y;
-		col.className = "cell";
+                col.dataset.x = x;
+                col.dataset.y = y;
+                col.className = "cell";
 
                 row.appendChild(col);
             }
@@ -427,27 +449,23 @@ class Board {
     }
 
     refresh () {
-	var fleet = this.fleet;
-	var id    = this.id;
+        var that = this;
+        var fleet = this.fleet;
 
-	if(!fleet) {
-	    console.log("no fleet deployed");
-	    return;
-	}
+        if(!fleet) {
+            console.log("no fleet deployed");
+            return;
+        }
 
-	fleet.vessels().forEach(function (o) {
-	    o.coords().forEach(function (c) {
-		var cell = document.querySelector("#"+id+" .cell[data-x='"+c.x()+"'][data-y='"+c.y()+"']");
-		if(!cell) {
-		    console.log("no cell at", c.x(), c.y());
-		    return;
-		}
+        fleet.vessels().forEach(function (o) {
+            o.coords().forEach(function (c) {
+                that.mark_cell(c.x(), c.y(), 'hot');
+            });
+        });
+    }
 
-		var cn   = cell.className.split(" ");
-		cn.push("hot");
-		cell.className=cn.join(" ");
-	    });
-	});
+    fire (x, y) {
+        this.mark_cell(x, y, "dead")
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Board;
@@ -525,7 +543,15 @@ class Fleet {
 
 	    ul.appendChild(li);
 	});
-	document.getElementById(this.id).appendChild(ul);
+
+        // clean up any previous lists
+        var children=document.getElementById(this.id).children;
+        for (var i=0;i<children.length; i++) {
+            children[i].remove();
+        }
+
+        // drop in the new list
+        document.getElementById(this.id).appendChild(ul);
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Fleet;

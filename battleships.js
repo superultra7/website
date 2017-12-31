@@ -18,6 +18,15 @@ var theirboard = new Board(boardsize, boardsize, "theirboard");
 myboard.draw();
 theirboard.draw();
 
+document
+    .getElementById('fire')
+    .onclick = function (e) {
+        var x=document.getElementById('x').value;
+        var y=document.getElementById('y').value;
+        myboard.fire(parseInt(x), parseInt(y));
+        return false;
+    };
+
 var myfleet = new Fleet("myfleet");
 
 myfleet.commission(new Battleship);

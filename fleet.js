@@ -64,6 +64,14 @@ export default class Fleet {
 
 	    ul.appendChild(li);
 	});
-	document.getElementById(this.id).appendChild(ul);
+
+        // clean up any previous lists
+        var children=document.getElementById(this.id).children;
+        for (var i=0;i<children.length; i++) {
+            children[i].remove();
+        }
+
+        // drop in the new list
+        document.getElementById(this.id).appendChild(ul);
     }
 };
