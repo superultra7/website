@@ -2,7 +2,7 @@ export default class Vessel {
     constructor (size) {
         this._size   = size;
 	this._damage = 0;
-	this.events = {};
+	this._events = {};
     }
 
     heading (heading) {
@@ -27,11 +27,16 @@ export default class Vessel {
     }
 
     bind (type, func) {
-	this.events[type] ||= new Array();
-	this.events[type].push(func);
+	if(!this._events[type]) {
+	    this._events[type] = new Array();
+	}
+	this._events[type].push(func);
     }
 
     trigger (type, args) {
+	if(this._events[type]) {
+	    this._events[type].forEach(function (f) { f(args); });
+	}
     }
 
     // returns an array of coordinates which this vessel occupies

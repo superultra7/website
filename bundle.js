@@ -72,6 +72,7 @@ class Vessel {
     constructor (size) {
         this._size   = size;
 	this._damage = 0;
+	this._events = {};
     }
 
     heading (heading) {
@@ -93,6 +94,19 @@ class Vessel {
 
     perc_damage () {
 	return 100 * (this._damage / this._size);
+    }
+
+    bind (type, func) {
+	if(!this._events[type]) {
+	    this._events[type] = new Array();
+	}
+	this._events[type].push(func);
+    }
+
+    trigger (type, args) {
+	if(this._events[type]) {
+	    this._events[type].forEach(function (f) { f(args); });
+	}
     }
 
     // returns an array of coordinates which this vessel occupies
@@ -411,7 +425,7 @@ class Fleet {
     commission (vessel) {
 	this._vessels.push(vessel);
 	var that = this;
-	vessel.addEventListener('change', function (e) {
+	vessel.bind('change', function (e) {
 	    that.draw();
 	});
     }
