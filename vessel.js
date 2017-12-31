@@ -1,6 +1,7 @@
 export default class Vessel {
     constructor (size) {
-        this.size = size;
+        this._size  = size;
+	this._state = "undamaged";
     }
 
     heading (heading) {
@@ -9,6 +10,18 @@ export default class Vessel {
 	}
 
 	return this._heading;
+    }
+
+    type () {
+	return this.constructor.name;
+    }
+
+    deployed () {
+	return this._heading ? 1 : 0;
+    }
+
+    state () {
+	return this._state;
     }
 
     // returns an array of coordinates which this vessel occupies
@@ -23,7 +36,7 @@ export default class Vessel {
 	var delta  = heading.direction().delta();
 	var coords = [];
 
-	for (var i=0; i<this.size; i++) {
+	for (var i=0; i<this._size; i++) {
 	    coords.push(this._heading.coordinate().move(delta, i));
 	}
 

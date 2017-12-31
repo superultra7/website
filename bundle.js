@@ -70,7 +70,8 @@
 "use strict";
 class Vessel {
     constructor (size) {
-        this.size = size;
+        this._size  = size;
+	this._state = "undamaged";
     }
 
     heading (heading) {
@@ -79,6 +80,18 @@ class Vessel {
 	}
 
 	return this._heading;
+    }
+
+    type () {
+	return this.constructor.name;
+    }
+
+    deployed () {
+	return this._heading ? 1 : 0;
+    }
+
+    state () {
+	return this._state;
     }
 
     // returns an array of coordinates which this vessel occupies
@@ -93,7 +106,7 @@ class Vessel {
 	var delta  = heading.direction().delta();
 	var coords = [];
 
-	for (var i=0; i<this.size; i++) {
+	for (var i=0; i<this._size; i++) {
 	    coords.push(this._heading.coordinate().move(delta, i));
 	}
 
@@ -137,18 +150,21 @@ var theirboard = new __WEBPACK_IMPORTED_MODULE_7__board__["a" /* default */](boa
 myboard.draw();
 theirboard.draw();
 
-var myfleet = new __WEBPACK_IMPORTED_MODULE_8__fleet__["a" /* default */]();
+var myfleet = new __WEBPACK_IMPORTED_MODULE_8__fleet__["a" /* default */]("myfleet");
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_0__vessels_battleship__["a" /* default */]);
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_1__vessels_carrier__["a" /* default */]);
-//myfleet.commission(new Destroyer);
-//myfleet.commission(new Destroyer);
-//myfleet.commission(new Submarine);
-//myfleet.commission(new Submarine);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_2__vessels_destroyer__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* default */]);
+myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* default */]);
 
 myfleet.deploy('Battleship', new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](5,5),   new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('nw')));
 myfleet.deploy('Carrier',    new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](20,20), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
+myfleet.deploy('Carrier',    new __WEBPACK_IMPORTED_MODULE_4__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_5__coordinate__["a" /* default */](20,20), new __WEBPACK_IMPORTED_MODULE_6__direction__["a" /* default */]('s')));
 
 myboard.deploy(myfleet);
+
+myfleet.draw();
 
 
 /***/ }),
@@ -198,7 +214,7 @@ class Destroyer extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */]
         super(3);
     }
 }
-/* unused harmony export default */
+/* harmony export (immutable) */ __webpack_exports__["a"] = Destroyer;
 
 
 
@@ -215,7 +231,7 @@ class Submarine extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */]
         super(2);
     }
 }
-/* unused harmony export default */
+/* harmony export (immutable) */ __webpack_exports__["a"] = Submarine;
 
 
 
@@ -377,8 +393,9 @@ class Board {
 
 "use strict";
 class Fleet {
-    constructor () {
+    constructor (id) {
         this._vessels = [];
+	this.id       = id;
     }
 
     commission (vessel) {
@@ -392,8 +409,8 @@ class Fleet {
     deploy (vesseltype, heading) {
 	var undeployed_vessels = this._vessels.filter(function (o) {
 
-	    if (o.constructor.name === vesseltype) {
-		return 1;
+	    if (o.type() === vesseltype) {
+		return ! o.deployed();
 	    }
 	});
 
@@ -403,6 +420,16 @@ class Fleet {
 	}
 
 	undeployed_vessels[0].heading(heading);
+    }
+
+    draw () {
+	var ul = document.createElement("ul");
+	this._vessels.forEach(function (o) {
+	    var li       = document.createElement("li");
+	    li.innerText = o.type() + " " + (o.deployed() ? "deployed" : "undeployed") + " " + o.state();
+	    ul.appendChild(li);
+	});
+	document.getElementById(this.id).appendChild(ul);
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Fleet;

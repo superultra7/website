@@ -1,6 +1,7 @@
 export default class Fleet {
-    constructor () {
+    constructor (id) {
         this._vessels = [];
+	this.id       = id;
     }
 
     commission (vessel) {
@@ -14,8 +15,8 @@ export default class Fleet {
     deploy (vesseltype, heading) {
 	var undeployed_vessels = this._vessels.filter(function (o) {
 
-	    if (o.constructor.name === vesseltype) {
-		return 1;
+	    if (o.type() === vesseltype) {
+		return ! o.deployed();
 	    }
 	});
 
@@ -25,5 +26,15 @@ export default class Fleet {
 	}
 
 	undeployed_vessels[0].heading(heading);
+    }
+
+    draw () {
+	var ul = document.createElement("ul");
+	this._vessels.forEach(function (o) {
+	    var li       = document.createElement("li");
+	    li.innerText = o.type() + " " + (o.deployed() ? "deployed" : "undeployed") + " " + o.state();
+	    ul.appendChild(li);
+	});
+	document.getElementById(this.id).appendChild(ul);
     }
 };
