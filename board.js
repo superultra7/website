@@ -5,6 +5,7 @@ export default class Board {
         this.width  = width;
         this.height = height;
         this.id     = id;
+	this.fired  = {};
     }
 
     deploy (fleet) {
@@ -20,7 +21,7 @@ export default class Board {
             return;
         }
 
-        var cn   = cell.className.split(" ");
+        var cn = cell.className.split(" ");
         cn.push(className);
         cell.className = cn.join(" ");
     }
@@ -70,6 +71,13 @@ export default class Board {
     }
 
     fire (x, y) {
+	if(this.fired[`${x},${y}`]) {
+	    console.log(`${x},${y} already fired`);
+	    return;
+	}
+
+	this.fired[`${x},${y}`] = 1;
+
         var fleet   = this.fleet;
         var vessels = fleet.vessels();
 
