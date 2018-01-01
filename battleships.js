@@ -1,3 +1,4 @@
+"use strict";
 import Battleship from "./vessels/battleship";
 import Carrier    from "./vessels/carrier";
 import Destroyer  from "./vessels/destroyer";

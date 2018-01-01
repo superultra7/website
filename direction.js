@@ -1,3 +1,4 @@
+"use strict";
 const mapping = {
     "n":  [0,   1],
     "s":  [0,  -1],

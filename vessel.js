@@ -1,8 +1,9 @@
+"use strict";
 export default class Vessel {
     constructor (size) {
         this._size   = size;
-	this._damage = 0;
-	this._events = {};
+        this._damage = 0;
+        this._events = {};
     }
 
     heading (heading) {

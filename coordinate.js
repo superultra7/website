@@ -1,3 +1,4 @@
+"use strict";
 export default class Coordinate {
     constructor (x, y) {
         this._x = x;
