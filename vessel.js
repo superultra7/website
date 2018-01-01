@@ -24,7 +24,7 @@ export default class Vessel {
     }
 
     perc_damage () {
-        var perc = 100 * (this._damage / this._size);
+        var perc = (100 * (this._damage / this._size)).toFixed(2);
 
 	if(perc > 100) {
 	    perc = 100;
