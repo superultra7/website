@@ -68,11 +68,12 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+
 class Vessel {
     constructor (size) {
         this._size   = size;
-	this._damage = 0;
-	this._events = {};
+        this._damage = 0;
+        this._events = {};
     }
 
     heading (heading) {
@@ -93,7 +94,13 @@ class Vessel {
     }
 
     perc_damage () {
-        return 100 * (this._damage / this._size);
+        var perc = (100 * (this._damage / this._size)).toFixed(2);
+
+	if(perc > 100) {
+	    perc = 100;
+	}
+
+	return perc;
     }
 
     bind (type, func) {
@@ -168,6 +175,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+
 var boardsize  = 24;
 var myboard    = new __WEBPACK_IMPORTED_MODULE_9__board__["a" /* default */](boardsize, boardsize, "myboard");
 var theirboard = new __WEBPACK_IMPORTED_MODULE_9__board__["a" /* default */](boardsize, boardsize, "theirboard");
@@ -178,8 +186,8 @@ theirboard.draw();
 document
     .getElementById('fire')
     .onclick = function (e) {
-        var x=document.getElementById('x').value;
-        var y=document.getElementById('y').value;
+        var x = document.getElementById('x').value;
+        var y = document.getElementById('y').value;
         myboard.fire(parseInt(x), parseInt(y));
         return false;
     };
@@ -317,6 +325,7 @@ class Lifeboat extends __WEBPACK_IMPORTED_MODULE_0__vessel__["a" /* default */] 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+
 class Heading {
     constructor (coordinate, direction) {
         this._coordinate = coordinate;
@@ -340,6 +349,7 @@ class Heading {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+
 class Coordinate {
     constructor (x, y) {
         this._x = x;
@@ -367,6 +377,7 @@ class Coordinate {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+
 const mapping = {
     "n":  [0,   1],
     "s":  [0,  -1],
@@ -399,12 +410,14 @@ class Direction {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+
 class Board {
     constructor (height, width, id) {
         this.board  = new Array(height).fill(new Array(width));
         this.width  = width;
         this.height = height;
         this.id     = id;
+	this.fired  = {};
     }
 
     deploy (fleet) {
@@ -415,12 +428,12 @@ class Board {
     mark_cell (x, y, className) {
         var id   = this.id;
         var cell = document.querySelector(`#${id} .cell[data-x='${x}'][data-y='${y}']`);
-		if(!cell) {
+        if(!cell) {
             console.log(`no cell at ${x}, ${y}`);
             return;
-		}
+        }
 
-        var cn   = cell.className.split(" ");
+        var cn = cell.className.split(" ");
         cn.push(className);
         cell.className = cn.join(" ");
     }
@@ -470,12 +483,22 @@ class Board {
     }
 
     fire (x, y) {
-        var fleet = this.fleet;
+	if(this.fired[`${x},${y}`]) {
+	    console.log(`${x},${y} already fired`);
+	    return;
+	}
+
+	this.fired[`${x},${y}`] = 1;
+
+        var fleet   = this.fleet;
         var vessels = fleet.vessels();
+
         for (var vi=0; vi<vessels.length; vi++) {
             var coords = vessels[vi].coords();
+
             for (var ci=0; ci<coords.length; ci++) {
                 var c = coords[ci];
+
                 if(c.x() == x && c.y() == y) {
                     vessels[vi].hit(1);
                     return this.mark_cell(x, y, "hit");
@@ -484,7 +507,6 @@ class Board {
         }
 
         this.mark_cell(x, y, "miss");
-        
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Board;
@@ -496,72 +518,73 @@ class Board {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+
 class Fleet {
     constructor (id) {
         this._vessels = [];
-	this.id       = id;
+        this.id       = id;
     }
 
     commission (vessel) {
-	this._vessels.push(vessel);
-	var that = this;
-	vessel.bind('change', function (e) {
-	    that.draw();
-	});
+        this._vessels.push(vessel);
+        var that = this;
+        vessel.bind('change', function (e) {
+            that.draw();
+        });
     }
 
     vessels () {
-	return this._vessels;
+        return this._vessels;
     }
 
     deploy (vesseltype, heading) {
-	var undeployed_vessels = this._vessels.filter(function (o) {
+        var undeployed_vessels = this._vessels.filter(function (o) {
 
-	    if (o.type() === vesseltype) {
-		return ! o.deployed();
-	    }
-	});
+            if (o.type() === vesseltype) {
+                return ! o.deployed();
+            }
+        });
 
-	if(undeployed_vessels.length === 0) {
-	    console.log(`no undeployed vessels of type ${vesseltype}`);
-	    return;
-	}
+        if(undeployed_vessels.length === 0) {
+            console.log(`no undeployed vessels of type ${vesseltype}`);
+            return;
+        }
 
-	undeployed_vessels[0].heading(heading);
+        undeployed_vessels[0].heading(heading);
     }
 
     draw () {
-	var ul = document.createElement("ul");
-	this._vessels.forEach(function (o) {
-	    var li        = document.createElement("li");
-	    var damage    = o.perc_damage();
-	    var className = "damage_none";
+        var ul = document.createElement("ul");
+        this._vessels.forEach(function (o) {
+            var li        = document.createElement("li");
+            var damage    = o.perc_damage();
+            var className = "damage_none";
 
-	    if(damage > 10) {
-		className = "damage_light";
-	    }
+            if(damage > 10) {
+                className = "damage_light";
+            }
 
-	    if(damage > 30) {
-		className = "damage_moderate";
-	    }
+            if(damage > 30) {
+                className = "damage_moderate";
+            }
 
-	    if(damage > 60) {
-		className = "damage_heavy";
-	    }
+            if(damage > 60) {
+                className = "damage_heavy";
+            }
 
-	    if(damage >= 100) {
-		className = "damage_total";
-	    }
+            if(damage >= 100) {
+                className = "damage_total";
+            }
 
-	    li.className = className;
-	    li.innerText = [
-		o.type(),
-		(o.deployed() ? "deployed" : "undeployed"),
-		o.perc_damage() + "% damage"
-	    ].join(" ");
+            li.className = className;
+            li.innerText = [
+                o.type(),
+                (o.deployed() ? "deployed" : "undeployed"),
+                o.perc_damage() + "% damage"
+            ].join(" ");
 
-	    ul.appendChild(li);
-	});
+            ul.appendChild(li);
+        });
 
         // clean up any previous lists
         var children=document.getElementById(this.id).children;

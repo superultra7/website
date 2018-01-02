@@ -1,3 +1,4 @@
+"use strict";
 export default class Heading {
     constructor (coordinate, direction) {
         this._coordinate = coordinate;

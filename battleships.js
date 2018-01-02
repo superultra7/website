@@ -1,15 +1,16 @@
+"use strict";
 import Battleship from "./vessels/battleship";
 import Carrier    from "./vessels/carrier";
 import Destroyer  from "./vessels/destroyer";
 import Submarine  from "./vessels/submarine";
-import Frigate  from "./vessels/frigate";
-import Lifeboat  from "./vessels/lifeboat";
+import Frigate    from "./vessels/frigate";
+import Lifeboat   from "./vessels/lifeboat";
+
 import Heading    from "./heading";
 import Coordinate from "./coordinate";
 import Direction  from "./direction";
-
-import Board from "./board";
-import Fleet from "./fleet";
+import Board      from "./board";
+import Fleet      from "./fleet";
 
 var boardsize  = 24;
 var myboard    = new Board(boardsize, boardsize, "myboard");
@@ -21,8 +22,8 @@ theirboard.draw();
 document
     .getElementById('fire')
     .onclick = function (e) {
-        var x=document.getElementById('x').value;
-        var y=document.getElementById('y').value;
+        var x = document.getElementById('x').value;
+        var y = document.getElementById('y').value;
         myboard.fire(parseInt(x), parseInt(y));
         return false;
     };

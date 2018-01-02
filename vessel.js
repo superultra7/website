@@ -1,8 +1,9 @@
+"use strict";
 export default class Vessel {
     constructor (size) {
         this._size   = size;
-	this._damage = 0;
-	this._events = {};
+        this._damage = 0;
+        this._events = {};
     }
 
     heading (heading) {
@@ -23,7 +24,13 @@ export default class Vessel {
     }
 
     perc_damage () {
-        return 100 * (this._damage / this._size);
+        var perc = (100 * (this._damage / this._size)).toFixed(2);
+
+	if(perc > 100) {
+	    perc = 100;
+	}
+
+	return perc;
     }
 
     bind (type, func) {
