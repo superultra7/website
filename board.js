@@ -1,11 +1,13 @@
 "use strict";
+import Fx    from "./fx";
 export default class Board {
     constructor (height, width, id) {
         this.board  = new Array(height).fill(new Array(width));
         this.width  = width;
         this.height = height;
         this.id     = id;
-	this.fired  = {};
+        this.fired  = {};
+        this.fx     = new Fx();
     }
 
     deploy (fleet) {
@@ -71,12 +73,14 @@ export default class Board {
     }
 
     fire (x, y) {
-	if(this.fired[`${x},${y}`]) {
-	    console.log(`${x},${y} already fired`);
-	    return;
-	}
+        this.fx.play("missile_in_flight", "explosion1");
 
-	this.fired[`${x},${y}`] = 1;
+        if(this.fired[`${x},${y}`]) {
+            console.log(`${x},${y} already fired`);
+            return;
+        }
+
+        this.fired[`${x},${y}`] = 1;
 
         var fleet   = this.fleet;
         var vessels = fleet.vessels();
