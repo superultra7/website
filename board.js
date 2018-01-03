@@ -73,31 +73,38 @@ export default class Board {
     }
 
     fire (x, y) {
-        this.fx.play("missile_in_flight", "explosion1");
+        var that = this;
 
-        if(this.fired[`${x},${y}`]) {
+        if(that.fired[`${x},${y}`]) {
             console.log(`${x},${y} already fired`);
+            that.fx.play("klaxon");
             return;
         }
 
-        this.fired[`${x},${y}`] = 1;
+        that.fired[`${x},${y}`] = 1;
 
-        var fleet   = this.fleet;
-        var vessels = fleet.vessels();
+        that.fx.play(["missile_in_flight",
+                      function () {
+                          var fleet   = that.fleet;
+                          var vessels = fleet.vessels();
 
-        for (var vi=0; vi<vessels.length; vi++) {
-            var coords = vessels[vi].coords();
+                          for (var vi=0; vi<vessels.length; vi++) {
+                              var coords = vessels[vi].coords();
 
-            for (var ci=0; ci<coords.length; ci++) {
-                var c = coords[ci];
+                              for (var ci=0; ci<coords.length; ci++) {
+                                  var c = coords[ci];
 
-                if(c.x() == x && c.y() == y) {
-                    vessels[vi].hit(1);
-                    return this.mark_cell(x, y, "hit");
-                }
-            }
-        }
+                                  if(c.x() == x && c.y() == y) {
+                                      vessels[vi].hit(1);
+				      that.fx.play("explosion1");
+                                      return that.mark_cell(x, y, "hit");
+                                  }
+                              }
+                          }
 
-        this.mark_cell(x, y, "miss");
+			  that.fx.play("sploosh");
+                          that.mark_cell(x, y, "miss");
+                      }
+                     ]);
     }
 }

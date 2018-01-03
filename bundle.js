@@ -94,7 +94,7 @@ class Vessel {
     }
 
     perc_damage () {
-        var perc = (100 * (this._damage / this._size)).toFixed(2);
+        var perc = Math.round(100 * (this._damage / this._size)); //.toFixed(2);
 
 	if(perc > 100) {
 	    perc = 100;
@@ -161,7 +161,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__coordinate__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__direction__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__board__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__fleet__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__fleet__ = __webpack_require__(13);
 
 
 
@@ -486,32 +486,39 @@ class Board {
     }
 
     fire (x, y) {
-        this.fx.play("missile_in_flight", "explosion1");
+        var that = this;
 
-        if(this.fired[`${x},${y}`]) {
+        if(that.fired[`${x},${y}`]) {
             console.log(`${x},${y} already fired`);
+            that.fx.play("klaxon");
             return;
         }
 
-        this.fired[`${x},${y}`] = 1;
+        that.fired[`${x},${y}`] = 1;
 
-        var fleet   = this.fleet;
-        var vessels = fleet.vessels();
+        that.fx.play(["missile_in_flight",
+                      function () {
+                          var fleet   = that.fleet;
+                          var vessels = fleet.vessels();
 
-        for (var vi=0; vi<vessels.length; vi++) {
-            var coords = vessels[vi].coords();
+                          for (var vi=0; vi<vessels.length; vi++) {
+                              var coords = vessels[vi].coords();
 
-            for (var ci=0; ci<coords.length; ci++) {
-                var c = coords[ci];
+                              for (var ci=0; ci<coords.length; ci++) {
+                                  var c = coords[ci];
 
-                if(c.x() == x && c.y() == y) {
-                    vessels[vi].hit(1);
-                    return this.mark_cell(x, y, "hit");
-                }
-            }
-        }
+                                  if(c.x() == x && c.y() == y) {
+                                      vessels[vi].hit(1);
+				      that.fx.play("explosion1");
+                                      return that.mark_cell(x, y, "hit");
+                                  }
+                              }
+                          }
 
-        this.mark_cell(x, y, "miss");
+			  that.fx.play("sploosh");
+                          that.mark_cell(x, y, "miss");
+                      }
+                     ]);
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Board;
@@ -523,8 +530,6 @@ class Board {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__queue__ = __webpack_require__(13);
-
 
 class Fx {
     constructor () {
@@ -541,18 +546,30 @@ class Fx {
     }
 
     // nb. this way won't allow the same sound to play more than once simultaneously
-    play () {
-        var that     = this;
-        var sequence = new Array();
-        var args     = arguments;
-        for (var i=0;i<args.length;i++) {
-            sequence.push(function () {
-                that.fx[args[i]].play();
-            });
-        }
+    play (sounds) {
+        var that = this;
 
-        var q=new __WEBPACK_IMPORTED_MODULE_0__queue__["a" /* default */](sequence);
-        q.run(function () { console.log("sequence complete")});
+	if(typeof sounds !== 'object') {
+	    sounds = [sounds];
+	}
+
+	var s = sounds.shift();
+	if(!s) {
+	    return;
+	}
+
+	// support callbacks in-between sounds
+	if(typeof s === 'function') {
+	    s();
+	    return that.play(sounds);
+	}
+
+	if(!this.fx[s]) {
+	    console.log(`no effect for ${s}`);
+	    return;
+	}
+	this.fx[s].onended = function () { that.play(sounds); };
+	this.fx[s].play();
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Fx;
@@ -561,37 +578,6 @@ class Fx {
 
 /***/ }),
 /* 13 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-class Queue {
-    constructor (args) {
-        this.queue = new Array();
-        for (var i=0; i<args.length; i++) {
-            console.log("queue", args[i]);
-            this.queue.push(function (cb) { args[i](); return cb(); });
-        }
-    }
-
-    run (cb) {
-        var that = this;
-        var f    = this.queue.shift();
-        if(!f) {
-            if(cb) {
-                return cb();
-            }
-            return;
-        }
-        f(function () { that.run(cb); });
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Queue;
-
-
-
-/***/ }),
-/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
