@@ -161,7 +161,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__coordinate__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__direction__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__board__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__fleet__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__fleet__ = __webpack_require__(14);
 
 
 
@@ -410,6 +410,8 @@ class Direction {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__fx__ = __webpack_require__(12);
+
 
 class Board {
     constructor (height, width, id) {
@@ -417,7 +419,8 @@ class Board {
         this.width  = width;
         this.height = height;
         this.id     = id;
-	this.fired  = {};
+        this.fired  = {};
+        this.fx     = new __WEBPACK_IMPORTED_MODULE_0__fx__["a" /* default */]();
     }
 
     deploy (fleet) {
@@ -483,12 +486,14 @@ class Board {
     }
 
     fire (x, y) {
-	if(this.fired[`${x},${y}`]) {
-	    console.log(`${x},${y} already fired`);
-	    return;
-	}
+        this.fx.play("missile_in_flight", "explosion1");
 
-	this.fired[`${x},${y}`] = 1;
+        if(this.fired[`${x},${y}`]) {
+            console.log(`${x},${y} already fired`);
+            return;
+        }
+
+        this.fired[`${x},${y}`] = 1;
 
         var fleet   = this.fleet;
         var vessels = fleet.vessels();
@@ -515,6 +520,78 @@ class Board {
 
 /***/ }),
 /* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__queue__ = __webpack_require__(13);
+
+
+class Fx {
+    constructor () {
+        this.fx = {};
+        var that = this;
+        [
+            "explosion1.mp3",
+            "klaxon.mp3",
+            "missile_in_flight.mp3"
+        ].forEach(function (o) {
+            var key      = o.match(/^[^.]+/)[0];
+            that.fx[key] = new Audio(`fx/${o}`); // buffer everything
+        })
+    }
+
+    // nb. this way won't allow the same sound to play more than once simultaneously
+    play () {
+        var that     = this;
+        var sequence = new Array();
+        var args     = arguments;
+        for (var i=0;i<args.length;i++) {
+            sequence.push(function () {
+                that.fx[args[i]].play();
+            });
+        }
+
+        var q=new __WEBPACK_IMPORTED_MODULE_0__queue__["a" /* default */](sequence);
+        q.run(function () { console.log("sequence complete")});
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Fx;
+
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+class Queue {
+    constructor (args) {
+        this.queue = new Array();
+        for (var i=0; i<args.length; i++) {
+            console.log("queue", args[i]);
+            this.queue.push(function (cb) { args[i](); return cb(); });
+        }
+    }
+
+    run (cb) {
+        var that = this;
+        var f    = this.queue.shift();
+        if(!f) {
+            if(cb) {
+                return cb();
+            }
+            return;
+        }
+        f(function () { that.run(cb); });
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Queue;
+
+
+
+/***/ }),
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
