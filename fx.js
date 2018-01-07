@@ -17,26 +17,26 @@ export default class Fx {
     play (sounds) {
         var that = this;
 
-	if(typeof sounds !== 'object') {
-	    sounds = [sounds];
-	}
+        if(typeof sounds !== 'object') {
+            sounds = [sounds];
+        }
 
-	var s = sounds.shift();
-	if(!s) {
-	    return;
-	}
+        var s = sounds.shift();
+        if(!s) {
+            return;
+        }
 
-	// support callbacks in-between sounds
-	if(typeof s === 'function') {
-	    s();
-	    return that.play(sounds);
-	}
+        // support callbacks in-between sounds
+        if(typeof s === 'function') {
+            s();
+            return that.play(sounds);
+        }
 
-	if(!this.fx[s]) {
-	    console.log(`no effect for ${s}`);
-	    return;
-	}
-	this.fx[s].onended = function () { that.play(sounds); };
-	this.fx[s].play();
+        if(!this.fx[s]) {
+            console.log(`no effect for ${s}`);
+            return;
+        }
+        this.fx[s].onended = function () { that.play(sounds); };
+        this.fx[s].play();
     }
 }
