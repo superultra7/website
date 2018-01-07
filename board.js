@@ -96,13 +96,13 @@ export default class Board {
 
                                   if(c.x() == x && c.y() == y) {
                                       vessels[vi].hit(1);
-				      that.fx.play("explosion1");
+                                      that.fx.play("explosion1");
                                       return that.mark_cell(x, y, "hit");
                                   }
                               }
                           }
 
-			  that.fx.play("sploosh");
+                          that.fx.play("sploosh");
                           that.mark_cell(x, y, "miss");
                       }
                      ]);
