@@ -1,5 +1,4 @@
 "use strict";
-import Queue from "./queue";
 export default class Fx {
     constructor () {
         this.fx = {};
@@ -15,17 +14,29 @@ export default class Fx {
     }
 
     // nb. this way won't allow the same sound to play more than once simultaneously
-    play () {
-        var that     = this;
-        var sequence = new Array();
-        var args     = arguments;
-        for (var i=0;i<args.length;i++) {
-            sequence.push(function () {
-                that.fx[args[i]].play();
-            });
-        }
+    play (sounds) {
+        var that = this;
 
-        var q=new Queue(sequence);
-        q.run(function () { console.log("sequence complete")});
+	if(typeof sounds !== 'object') {
+	    sounds = [sounds];
+	}
+
+	var s = sounds.shift();
+	if(!s) {
+	    return;
+	}
+
+	// support callbacks in-between sounds
+	if(typeof s === 'function') {
+	    s();
+	    return that.play(sounds);
+	}
+
+	if(!this.fx[s]) {
+	    console.log(`no effect for ${s}`);
+	    return;
+	}
+	this.fx[s].onended = function () { that.play(sounds); };
+	this.fx[s].play();
     }
 }
