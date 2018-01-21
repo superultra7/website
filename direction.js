@@ -5,10 +5,16 @@ const mapping = {
     "e":  [1,   0],
     "w":  [-1,  0],
     "nw": [-1, -1],
+    "ne": [1,  -1],
+    "se": [1,   1],
+    "sw": [-1,  1],
 };
 
 export default class Direction {
     constructor (direction) {
+        if(direction === "random") {
+            direction = Object.keys(mapping)[Math.floor(Math.random()*Object.keys(mapping).length)]
+        }
         this._direction = direction; // n, ne, e, se, s, sw, w, nw
     }
 

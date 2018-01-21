@@ -203,14 +203,19 @@ myfleet.commission(new __WEBPACK_IMPORTED_MODULE_3__vessels_submarine__["a" /* d
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_4__vessels_frigate__["a" /* default */]);
 myfleet.commission(new __WEBPACK_IMPORTED_MODULE_5__vessels_lifeboat__["a" /* default */]);
 
-myfleet.deploy('Battleship', new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](5,5),   new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('nw')));
-myfleet.deploy('Carrier',    new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](20,20), new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('s')));
-myfleet.deploy('Destroyer',  new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](20,5),  new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('s')));
-myfleet.deploy('Destroyer',  new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](10,10), new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('s')));
-myfleet.deploy('Submarine',  new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](8,0),   new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('n')));
-myfleet.deploy('Submarine',  new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](10,20), new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('s')));
-myfleet.deploy('Frigate', new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](5,5),   new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('e')));
-myfleet.deploy('Lifeboat',    new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](13,1), new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('w')));
+function rnd_pos () {
+    return Math.floor(Math.random() * boardsize);
+}
+
+
+myfleet.deploy('Battleship', new __WEBPACK_IMPORTED_MODULE_6__heading__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_7__coordinate__["a" /* default */](rnd_pos(), rnd_pos()),   new __WEBPACK_IMPORTED_MODULE_8__direction__["a" /* default */]('random')));
+//myfleet.deploy('Carrier',    new Heading(new Coordinate(20,20), new Direction('s')));
+//myfleet.deploy('Destroyer',  new Heading(new Coordinate(20,5),  new Direction('s')));
+//myfleet.deploy('Destroyer',  new Heading(new Coordinate(10,10), new Direction('s')));
+//myfleet.deploy('Submarine',  new Heading(new Coordinate(8,0),   new Direction('n')));
+//myfleet.deploy('Submarine',  new Heading(new Coordinate(10,20), new Direction('s')));
+//myfleet.deploy('Frigate', new Heading(new Coordinate(5,5),   new Direction('e')));
+//myfleet.deploy('Lifeboat',    new Heading(new Coordinate(13,1), new Direction('w')));
 
 
 myboard.deploy(myfleet);
@@ -384,10 +389,16 @@ const mapping = {
     "e":  [1,   0],
     "w":  [-1,  0],
     "nw": [-1, -1],
+    "ne": [1,  -1],
+    "se": [1,   1],
+    "sw": [-1,  1],
 };
 
 class Direction {
     constructor (direction) {
+        if(direction === "random") {
+            direction = Object.keys(mapping)[Math.floor(Math.random()*Object.keys(mapping).length)]
+        }
         this._direction = direction; // n, ne, e, se, s, sw, w, nw
     }
 
@@ -509,13 +520,13 @@ class Board {
 
                                   if(c.x() == x && c.y() == y) {
                                       vessels[vi].hit(1);
-				      that.fx.play("explosion1");
+                                      that.fx.play("explosion1");
                                       return that.mark_cell(x, y, "hit");
                                   }
                               }
                           }
 
-			  that.fx.play("sploosh");
+                          that.fx.play("sploosh");
                           that.mark_cell(x, y, "miss");
                       }
                      ]);
@@ -549,27 +560,27 @@ class Fx {
     play (sounds) {
         var that = this;
 
-	if(typeof sounds !== 'object') {
-	    sounds = [sounds];
-	}
+        if(typeof sounds !== 'object') {
+            sounds = [sounds];
+        }
 
-	var s = sounds.shift();
-	if(!s) {
-	    return;
-	}
+        var s = sounds.shift();
+        if(!s) {
+            return;
+        }
 
-	// support callbacks in-between sounds
-	if(typeof s === 'function') {
-	    s();
-	    return that.play(sounds);
-	}
+        // support callbacks in-between sounds
+        if(typeof s === 'function') {
+            s();
+            return that.play(sounds);
+        }
 
-	if(!this.fx[s]) {
-	    console.log(`no effect for ${s}`);
-	    return;
-	}
-	this.fx[s].onended = function () { that.play(sounds); };
-	this.fx[s].play();
+        if(!this.fx[s]) {
+            console.log(`no effect for ${s}`);
+            return;
+        }
+        this.fx[s].onended = function () { that.play(sounds); };
+        this.fx[s].play();
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Fx;

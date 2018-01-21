@@ -39,14 +39,19 @@ myfleet.commission(new Submarine);
 myfleet.commission(new Frigate);
 myfleet.commission(new Lifeboat);
 
-myfleet.deploy('Battleship', new Heading(new Coordinate(5,5),   new Direction('nw')));
-myfleet.deploy('Carrier',    new Heading(new Coordinate(20,20), new Direction('s')));
-myfleet.deploy('Destroyer',  new Heading(new Coordinate(20,5),  new Direction('s')));
-myfleet.deploy('Destroyer',  new Heading(new Coordinate(10,10), new Direction('s')));
-myfleet.deploy('Submarine',  new Heading(new Coordinate(8,0),   new Direction('n')));
-myfleet.deploy('Submarine',  new Heading(new Coordinate(10,20), new Direction('s')));
-myfleet.deploy('Frigate', new Heading(new Coordinate(5,5),   new Direction('e')));
-myfleet.deploy('Lifeboat',    new Heading(new Coordinate(13,1), new Direction('w')));
+function rnd_pos () {
+    return Math.floor(Math.random() * boardsize);
+}
+
+
+myfleet.deploy('Battleship', new Heading(new Coordinate(rnd_pos(), rnd_pos()),   new Direction('random')));
+//myfleet.deploy('Carrier',    new Heading(new Coordinate(20,20), new Direction('s')));
+//myfleet.deploy('Destroyer',  new Heading(new Coordinate(20,5),  new Direction('s')));
+//myfleet.deploy('Destroyer',  new Heading(new Coordinate(10,10), new Direction('s')));
+//myfleet.deploy('Submarine',  new Heading(new Coordinate(8,0),   new Direction('n')));
+//myfleet.deploy('Submarine',  new Heading(new Coordinate(10,20), new Direction('s')));
+//myfleet.deploy('Frigate', new Heading(new Coordinate(5,5),   new Direction('e')));
+//myfleet.deploy('Lifeboat',    new Heading(new Coordinate(13,1), new Direction('w')));
 
 
 myboard.deploy(myfleet);
