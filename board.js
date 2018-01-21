@@ -102,7 +102,7 @@ export default class Board {
                               }
                           }
 
-                          that.fx.play("sploosh");
+                          that.fx.play("bloop");
                           that.mark_cell(x, y, "miss");
                       }
                      ]);

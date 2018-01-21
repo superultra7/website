@@ -526,7 +526,7 @@ class Board {
                               }
                           }
 
-                          that.fx.play("sploosh");
+                          that.fx.play("bloop");
                           that.mark_cell(x, y, "miss");
                       }
                      ]);
@@ -549,7 +549,8 @@ class Fx {
         [
             "explosion1.mp3",
             "klaxon.mp3",
-            "missile_in_flight.mp3"
+            "missile_in_flight.mp3",
+            "bloop.mp3"
         ].forEach(function (o) {
             var key      = o.match(/^[^.]+/)[0];
             that.fx[key] = new Audio(`fx/${o}`); // buffer everything
