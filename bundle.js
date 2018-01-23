@@ -186,9 +186,17 @@ theirboard.draw();
 document
     .getElementById('fire')
     .onclick = function (e) {
-        var x = document.getElementById('x').value;
-        var y = document.getElementById('y').value;
-        myboard.fire(parseInt(x), parseInt(y));
+        try {
+            var coord   = document.getElementById('coord').value;
+            var matches = coord.match(/^([A-Z])(\d+)/); // only support one letter (0-25)
+            var x       = matches[1].charCodeAt(0)-64;
+            var y       = matches[2];
+            if(x>0 && x<=boardsize && y>0 && y<=boardsize) {
+                myboard.fire(parseInt(x), parseInt(y));
+            }
+        } catch(e) {
+            console.log("error", e);
+        }
         return false;
     };
 
@@ -456,16 +464,26 @@ class Board {
         var container       = document.createElement("div");
         container.className = "board";
 
-        for (var y=0; y<this.height; y++) {
+        for (var y=0; y<=this.height; y++) {
             var row       = document.createElement("div");
             row.dataset.y = y;
             row.className = "row"
 
-            for (var x=0; x<this.width; x++) {
-                var col       = document.createElement("div");
-                col.dataset.x = x;
-                col.dataset.y = y;
-                col.className = "cell";
+            for (var x=0; x<=this.width; x++) {
+                var col = document.createElement("div");
+                if(y===0 && x!==0) {
+                    var index     = String.fromCharCode(64+x);
+                    col.innerHTML = index;
+                    col.className = "index";
+                } else if(y!==0 && x===0) {
+                    var index     = y;
+                    col.innerHTML = index;
+                    col.className = "index";
+                } else {
+                    col.dataset.x = x;
+                    col.dataset.y = y;
+                    col.className = "cell";
+                }
 
                 row.appendChild(col);
             }

@@ -9,11 +9,18 @@ h1 {
     font-family: arial;
 }
 
-.cell {
+.cell, .index {
+    float: left;
     border: 1px solid #eee;
     width: 10px;
     height: 10px;
-    float: left;
+}
+
+.index {
+    font-family: monospace, sans-serif;
+    font-size: 7pt;
+    color: #000;
+    text-align: center;
 }
 
 .cell.hot {
