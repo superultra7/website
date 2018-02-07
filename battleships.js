@@ -1,10 +1,6 @@
 "use strict";
-import Battleship from "./vessels/battleship";
-import Carrier    from "./vessels/carrier";
-import Destroyer  from "./vessels/destroyer";
-import Submarine  from "./vessels/submarine";
-import Frigate    from "./vessels/frigate";
-import Lifeboat   from "./vessels/lifeboat";
+//import SockPuppet from "./sockpuppet";
+import {Battleship Carrier Destroyer Submarine Frigate Lifeboat} from "./vessels";
 
 import Heading    from "./heading";
 import Coordinate from "./coordinate";
@@ -15,6 +11,9 @@ import Fleet      from "./fleet";
 var boardsize  = 24;
 var myboard    = new Board(boardsize, boardsize, "myboard");
 var theirboard = new Board(boardsize, boardsize, "theirboard");
+//var ws         = new SockPuppet("ws://localhost:8080");
+
+//ws.start();
 
 myboard.draw();
 theirboard.draw();
