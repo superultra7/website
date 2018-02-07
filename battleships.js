@@ -1,6 +1,11 @@
 "use strict";
+
 require('webpack-jquery-ui');
 require('webpack-jquery-ui/css');
+require('webpack-jquery-ui/interactions');
+require('webpack-jquery-ui/widgets');
+require('webpack-jquery-ui/effects');
+
 import SockPuppet from "./sockpuppet";
 import {Battleship, Carrier, Destroyer, Submarine, Frigate, Lifeboat} from "./vessels";
 
@@ -14,8 +19,6 @@ var boardsize  = 24;
 var myboard    = new Board(boardsize, boardsize, "myboard");
 var theirboard = new Board(boardsize, boardsize, "theirboard");
 var sp         = new SockPuppet("ws://localhost:8080");
-
-sp.start();
 
 myboard.draw();
 theirboard.draw();
@@ -66,3 +69,7 @@ myfleet.deploy('Battleship', new Heading(new Coordinate(rnd_pos(), rnd_pos()),  
 myboard.deploy(myfleet);
 
 myfleet.draw();
+
+$('#init').click(() => {
+    sp.start();
+});

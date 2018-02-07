@@ -7,21 +7,27 @@ const wss = new WebSocket.Server({ port: 8080 });
 let games = {};
 
 let dispatch = {
-    start: (message) => {
-	this.game_id = uuidv1();
-	console.log("start", message, this);
+    start: (ws, message) => {
+	ws.game_id     = uuidv1();
+	games[game_id] = [ws.conn];
+	ws.send(JSON.stringify({game: ws.game_id}));
+	console.log("start", message, ws, this);
     },
     list: (message) => {
 	ws.send(JSON.stringify({games:Object.keys(games)}));
     },
     join: (message) => {
 	console.log("start", message, this);
-	ws.game_id = uuidv1();
     }
 };
 
 wss.on('connection', (ws) => {
     console.info("new connection");
+
+    ws.conn = uuidv1();
+
+    // allocate a new id immediately - can be overridden later
+    ws.send(JSON.stringify({conn: ws.conn}));
 
     ws.on('error', (e) => {
         console.warn("error", e);
@@ -34,7 +40,7 @@ wss.on('connection', (ws) => {
 	    let func   = dispatch[action];
 
 	    if(func) {
-		func.call(ws, struct);
+		func.call(ws, ws, struct);
 	    } else {
 		console.log(`unknown action ${action}`);
 	    }

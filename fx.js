@@ -10,7 +10,7 @@ export default class Fx {
             "bloop.mp3"
         ].forEach(function (o) {
             var key      = o.match(/^[^.]+/)[0];
-            that.fx[key] = new Audio(`fx/${o}`); // buffer everything
+            that.fx[key] = new Audio(require(`./fx/${o}`)); // buffer everything
         })
     }
 

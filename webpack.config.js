@@ -3,7 +3,7 @@ const webpack=require("webpack");
 module.exports = {
     "entry": [
 	"webpack-jquery-ui",
-	"babel-polyfill",
+//	"babel-polyfill",
 	"./battleships.js"
     ],
     //    "plugins": ["babel-preset-latest"],
@@ -35,12 +35,19 @@ module.exports = {
 	    {
 		test: /\.css$/,
 		loaders: ["style-loader","css-loader"]
-	    }
-	],
+	    },
+	    {
+		test: /\.(mp3)$/i,
+		loader:"file-loader",
+		query:{
+		    name:'[name].[ext]',
+		    outputPath:'fx/'
+		}
+	    },
+	]/*,
 	"loaders": [
 	    {
 		"loader": "babel-loader",
-		
 		"exclude": [
 		    path.resolve(__dirname, "node_modules"),
 		    path.resolve(__dirname, "server"),
@@ -54,6 +61,6 @@ module.exports = {
 		    "plugins": ['transform-runtime']
 		}
 	    },
-	]
+	]*/
     }
 };

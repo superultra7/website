@@ -15,6 +15,7 @@ export default class SockPuppet {
 	    console.error("websocket failed");
 	    setTimeout(() => { this._init() }, 1000);
 	};
+	this.ws.onmessage = this.handler.bind(this);
 	this.tries      = 1;
     }
 
@@ -44,5 +45,21 @@ export default class SockPuppet {
 	this._send({
 	    action:"start"
 	});
+    }
+
+    handler (object) {
+	let message;
+	try {
+	    message = JSON.parse(object.data);
+	    if(message.conn) {
+		$('#conn').html(message.conn);
+	    }
+	    if(message.game) {
+		$('#game').html(message.game);
+	    }
+	} catch (message_error) {
+	    console.error("message error", message);
+	}
+	console.info(message);
     }
 }
