@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+const WebSocket = require('ws');
+const uuidv1 = require('uuid/v1');
+const wss = new WebSocket.Server({ port: 8080 });
+
+let games = {};
+
+let dispatch = {
+    start: (message) => {
+	this.game_id = uuidv1();
+	console.log("start", message, this);
+    },
+    list: (message) => {
+	ws.send(JSON.stringify({games:Object.keys(games)}));
+    },
+    join: (message) => {
+	console.log("start", message, this);
+	ws.game_id = uuidv1();
+    }
+};
+
+wss.on('connection', (ws) => {
+    console.info("new connection");
+
+    ws.on('error', (e) => {
+        console.warn("error", e);
+    });
+
+    ws.on('message', (message) => {
+	try {
+	    let struct = JSON.parse(message);
+	    let action = struct.action;
+	    let func   = dispatch[action];
+
+	    if(func) {
+		func.call(ws, struct);
+	    } else {
+		console.log(`unknown action ${action}`);
+	    }
+	} catch (e) {
+	    console.error("bad message", message);
+	}
+  });
+});
