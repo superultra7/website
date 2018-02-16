@@ -1,51 +1,44 @@
 #!/usr/bin/env node
 
-const WebSocket = require('ws');
 const uuidv1 = require('uuid/v1');
-const wss = new WebSocket.Server({ port: 8080 });
 
+const express = require('express');
+const app  = express();
+const http = require('http').Server(app);
+const io   = require('socket.io')(http);
+const dirname = __dirname.split("/").splice(0,__dirname.split("/").length-1).join("/");
 let games = {};
 
-let dispatch = {
-    start: (ws, message) => {
-	ws.game_id     = uuidv1();
-	games[game_id] = [ws.conn];
-	ws.send(JSON.stringify({game: ws.game_id}));
-	console.log("start", message, ws, this);
-    },
-    list: (message) => {
-	ws.send(JSON.stringify({games:Object.keys(games)}));
-    },
-    join: (message) => {
-	console.log("start", message, this);
-    }
-};
-
-wss.on('connection', (ws) => {
-    console.info("new connection");
-
-    ws.conn = uuidv1();
-
-    // allocate a new id immediately - can be overridden later
-    ws.send(JSON.stringify({conn: ws.conn}));
-
-    ws.on('error', (e) => {
-        console.warn("error", e);
-    });
-
-    ws.on('message', (message) => {
-	try {
-	    let struct = JSON.parse(message);
-	    let action = struct.action;
-	    let func   = dispatch[action];
-
-	    if(func) {
-		func.call(ws, ws, struct);
-	    } else {
-		console.log(`unknown action ${action}`);
+app.use('/',
+	express.static('build', {
+	    dotfiles: 'ignore',
+	    etag: false,
+	    extensions: ['css', 'js', 'html'],
+	    index: false,
+	    maxAge: '1d',
+	    redirect: false,
+	    setHeaders: function (res, path, stat) {
+		res.set('x-timestamp', Date.now())
 	    }
-	} catch (e) {
-	    console.error("bad message", message);
+	}));
+
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('join', (game_id) => {
+	console.log("join", game_id);
+	if(!games[game_id]) {
+	    games[game_id] = {
+		players: []
+	    };
 	}
-  });
+	socket.join(game_id);
+	games[game_id].players.push(socket);
+	if(games[game_id].players.length == 2) {
+	    io.to(game_id).emit('start');
+	}
+    });
+});
+
+http.listen(3000, () => {
+    console.log('listening on *:3000');
 });

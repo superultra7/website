@@ -5,8 +5,9 @@ require('webpack-jquery-ui/css');
 require('webpack-jquery-ui/interactions');
 require('webpack-jquery-ui/widgets');
 require('webpack-jquery-ui/effects');
+//require("socket.io-client");
+import io from 'socket.io-client';
 
-import SockPuppet from "./sockpuppet";
 import {Battleship, Carrier, Destroyer, Submarine, Frigate, Lifeboat} from "./vessels";
 
 import Heading    from "./heading";
@@ -18,7 +19,6 @@ import Fleet      from "./fleet";
 var boardsize  = 24;
 var myboard    = new Board(boardsize, boardsize, "myboard");
 var theirboard = new Board(boardsize, boardsize, "theirboard");
-var sp         = new SockPuppet("ws://localhost:8080");
 
 myboard.draw();
 theirboard.draw();
@@ -39,6 +39,24 @@ document
         }
         return false;
     };
+
+$(document).ready(() => {
+    let game_id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
+    let anchor  = document.location.href.split("#", 2);
+
+    if(anchor.length === 2) {
+	game_id = anchor[1];
+    }
+
+    document.getElementById('game_id').innerHTML=`<a href="${document.location.href}#${game_id}">${game_id}</a>`;
+
+    let socket = io.connect();
+    console.log(socket);
+    socket.emit('join', game_id);
+    socket.on('start', () => {
+	alert("start!");
+    });
+});
 
 var myfleet = new Fleet("myfleet");
 
