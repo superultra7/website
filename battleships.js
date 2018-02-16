@@ -56,6 +56,9 @@ $(document).ready(() => {
     socket.on('start', () => {
 	alert("start!");
     });
+    socket.on('player left', () => {
+	alert("the other player left");
+    });
 });
 
 var myfleet = new Fleet("myfleet");

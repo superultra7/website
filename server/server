@@ -32,9 +32,15 @@ io.on('connection', (socket) => {
 	    };
 	}
 	socket.join(game_id);
+	socket.game_id = game_id;
 	games[game_id].players.push(socket);
 	if(games[game_id].players.length == 2) {
 	    io.to(game_id).emit('start');
+	}
+    });
+    socket.on('disconnect', () => {
+	if(socket.game_id) {
+	    io.to(socket.game_id).emit('player left');
 	}
     });
 });
