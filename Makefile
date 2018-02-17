@@ -1,18 +1,15 @@
-all: client server
+all: clean client server
+
+clean:
+	rm -rf build
 
 client:
 	yarn install
-	touch build
-	rm -rf build
 	node_modules/.bin/webpack --config webpack.config.js
 	cp index.html build/
 	cp style.css build/assets/
 
 server:
-	rm battleship-server || true
-	make battleship-server
+	(cd server ; yarn install; pkg server -o ../build/battleship-server)
 
-battleship-server:
-	(cd server ; yarn install; pkg server -o ../battleship-server)
-
-.PHONY: client server
+.PHONY: clean client server

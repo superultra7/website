@@ -37,7 +37,8 @@ h1 {
 
 #boardcontainer {
     margin: 0 auto;
-    width: 1024px;
+/*    width: 1024px;*/
+    overflow: auto;
 }
 
 .board, #myfleet {

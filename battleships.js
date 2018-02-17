@@ -15,10 +15,12 @@ import Coordinate from "./coordinate";
 import Direction  from "./direction";
 import Board      from "./board";
 import Fleet      from "./fleet";
+import Fx         from "./fx";
 
 let boardsize  = 24;
 let myboard    = new Board(boardsize, boardsize, "myboard");
 let theirboard = new Board(boardsize, boardsize, "theirboard");
+let fx         = new Fx();
 let socket     = io.connect();
 
 myboard.draw();
@@ -80,6 +82,7 @@ $(document).ready(() => {
     socket.emit('join', game_id); // join a game as soon as the page is ready
 
     socket.on('start', () => {
+	fx.play('klaxon');
 	notify('game started');
     });
 
@@ -119,15 +122,14 @@ function rnd_pos () {
 }
 
 
-myfleet.deploy('Battleship', new Heading(new Coordinate(rnd_pos(), rnd_pos()),   new Direction('random')));
-//myfleet.deploy('Carrier',    new Heading(new Coordinate(20,20), new Direction('s')));
-//myfleet.deploy('Destroyer',  new Heading(new Coordinate(20,5),  new Direction('s')));
-//myfleet.deploy('Destroyer',  new Heading(new Coordinate(10,10), new Direction('s')));
-//myfleet.deploy('Submarine',  new Heading(new Coordinate(8,0),   new Direction('n')));
-//myfleet.deploy('Submarine',  new Heading(new Coordinate(10,20), new Direction('s')));
-//myfleet.deploy('Frigate', new Heading(new Coordinate(5,5),   new Direction('e')));
-//myfleet.deploy('Lifeboat',    new Heading(new Coordinate(13,1), new Direction('w')));
-
+//myfleet.deploy('Battleship', new Heading(new Coordinate(rnd_pos(), rnd_pos()),   new Direction('random')));
+myfleet.deploy('Carrier',    new Heading(new Coordinate(rnd_pos(), rnd_pos()), new Direction('random')));
+myfleet.deploy('Destroyer',  new Heading(new Coordinate(rnd_pos(), rnd_pos()), new Direction('random')));
+myfleet.deploy('Destroyer',  new Heading(new Coordinate(rnd_pos(), rnd_pos()), new Direction('random')));
+myfleet.deploy('Submarine',  new Heading(new Coordinate(rnd_pos(), rnd_pos()), new Direction('random')));
+myfleet.deploy('Submarine',  new Heading(new Coordinate(rnd_pos(), rnd_pos()), new Direction('random')));
+myfleet.deploy('Frigate',    new Heading(new Coordinate(rnd_pos(), rnd_pos()), new Direction('random')));
+myfleet.deploy('Lifeboat',   new Heading(new Coordinate(rnd_pos(), rnd_pos()), new Direction('random')));
 
 myboard.deploy(myfleet);
 
