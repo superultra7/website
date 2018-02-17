@@ -82,7 +82,7 @@ export default class Board {
         });
     }
 
-    fire (x, y) {
+    fire (x, y, callback) {
         var that = this;
 
         if(that.fired[`${x},${y}`]) {
@@ -107,12 +107,14 @@ export default class Board {
                                   if(c.x() == x && c.y() == y) {
                                       vessels[vi].hit(1);
                                       that.fx.play("explosion1");
+				      callback(1);
                                       return that.mark_cell(x, y, "hit");
                                   }
                               }
                           }
 
                           that.fx.play("bloop");
+			  callback(0);
                           that.mark_cell(x, y, "miss");
                       }
                      ]);

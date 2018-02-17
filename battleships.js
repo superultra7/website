@@ -16,9 +16,10 @@ import Direction  from "./direction";
 import Board      from "./board";
 import Fleet      from "./fleet";
 
-var boardsize  = 24;
-var myboard    = new Board(boardsize, boardsize, "myboard");
-var theirboard = new Board(boardsize, boardsize, "theirboard");
+let boardsize  = 24;
+let myboard    = new Board(boardsize, boardsize, "myboard");
+let theirboard = new Board(boardsize, boardsize, "theirboard");
+let socket     = io.connect();
 
 myboard.draw();
 theirboard.draw();
@@ -29,16 +30,35 @@ document
         try {
             var coord   = document.getElementById('coord').value;
             var matches = coord.match(/^([A-Z])(\d+)/); // only support one letter (0-25)
-            var x       = matches[1].charCodeAt(0)-64;
-            var y       = matches[2];
-            if(x>0 && x<=boardsize && y>0 && y<=boardsize) {
-                myboard.fire(parseInt(x), parseInt(y));
-            }
+            var x       = parseInt(matches[1].charCodeAt(0)-64);
+            var y       = parseInt(matches[2]);
+            if(x>0 && x<=boardsize && y>0 && y<=boardsize) { // basic boundary checking
+		console.log("turn", {x:x, y:y});
+		socket.emit('turn', {x:x, y:y});
+            } else {
+		console.error("out of bounds");
+	    }
         } catch(e) {
             console.log("error", e);
         }
         return false;
     };
+
+const notify = (body, title, icon) => {
+    if(!Notification) {
+	// no support
+	return;
+    }
+
+    if (Notification.permission !== "granted") {
+	Notification.requestPermission();
+    }
+
+    var notification = new Notification(title || 'battleships', {
+	icon: icon || 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+	body: body,
+    });
+};
 
 $(document).ready(() => {
     let game_id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
@@ -48,20 +68,42 @@ $(document).ready(() => {
 	game_id = anchor[1];
     }
 
-    document.getElementById('game_id').innerHTML=`<a href="${document.location.href}#${game_id}">${game_id}</a>`;
+    document.getElementById('game_id').innerHTML=`<a href="${anchor[0]}#${game_id}">${game_id}</a>`;
 
-    let socket = io.connect();
-    console.log(socket);
-    socket.emit('join', game_id);
+    if (Notification && Notification.permission !== "granted") {
+	Notification.requestPermission();
+    }
+
+    /*
+     * socket.io handling
+     */
+    socket.emit('join', game_id); // join a game as soon as the page is ready
+
     socket.on('start', () => {
-	alert("start!");
+	notify('game started');
     });
+
     socket.on('player left', () => {
-	alert("the other player left");
+	notify('other player left');
+    });
+    socket.on('turn', (turn) => {
+	notify(`other player fired ${turn.x},${turn.y}`);
+        myboard.fire(parseInt(turn.x), parseInt(turn.y), (result) => {
+	    socket.emit(result ? 'hit' : 'miss', turn);
+	});
+    });
+    socket.on('hit', (turn) => {
+	notify(`HIT! ${turn.x},${turn.y}`);
+	theirboard.mark_cell(turn.x, turn.y, "hit");
+    });
+    socket.on('miss', (turn) => {
+	notify(`MISS! ${turn.x},${turn.y}`);
+	theirboard.mark_cell(turn.x, turn.y, "miss");
     });
 });
 
-var myfleet = new Fleet("myfleet");
+
+let myfleet = new Fleet("myfleet");
 
 myfleet.commission(new Battleship);
 myfleet.commission(new Carrier);
