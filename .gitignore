@@ -4,4 +4,7 @@ _site
 *~
 node_modules/
 build/
-battleship-server
+battleship-server-linux
+battleship-server-macos
+battleship-server-win.exe
+yarn-error.log
