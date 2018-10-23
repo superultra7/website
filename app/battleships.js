@@ -1,11 +1,12 @@
 "use strict";
-
+/*
 require('webpack-jquery-ui');
 require('webpack-jquery-ui/css');
 require('webpack-jquery-ui/interactions');
 require('webpack-jquery-ui/widgets');
 require('webpack-jquery-ui/effects');
-//require("socket.io-client");
+require('webpack-jquery-ui/dialog');
+*/
 import io from 'socket.io-client';
 
 import {Battleship, Carrier, Destroyer, Submarine, Frigate, Lifeboat} from "./vessels";
@@ -21,7 +22,9 @@ let boardsize  = 24;
 let myboard    = new Board(boardsize, boardsize, "myboard");
 let theirboard = new Board(boardsize, boardsize, "theirboard");
 let fx         = new Fx();
-let socket     = io.connect();
+let socket     = io.connect("http://localhost:3000/");
+
+fx.play('klaxon');
 
 myboard.draw();
 theirboard.draw();
@@ -63,14 +66,21 @@ const notify = (body, title, icon) => {
 };
 
 $(document).ready(() => {
-    let game_id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
-    let anchor  = document.location.href.split("#", 2);
+    $('#connect').click((e) => {
+	e.preventDefault();
+	let game_id = $('#game_id').value;
+	console.log("joining " + game_id);
+	socket.emit('join', game_id); // join a game as soon as the page is ready
+	return false;
+    });
 
-    if(anchor.length === 2) {
-	game_id = anchor[1];
+    let new_game_id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
+    let game_id = $('#game_id').value;
+    if(!game_id) {
+	$('#game_id').value = new_game_id;
     }
 
-    document.getElementById('game_id').innerHTML=`<a href="${anchor[0]}#${game_id}">${game_id}</a>`;
+//    document.getElementById('game_id').innerHTML=`<a href="${anchor[0]}#${game_id}">${game_id}</a>`;
 
     if (Notification && Notification.permission !== "granted") {
 	Notification.requestPermission();
@@ -79,7 +89,7 @@ $(document).ready(() => {
     /*
      * socket.io handling
      */
-    socket.emit('join', game_id); // join a game as soon as the page is ready
+//    socket.emit('join', game_id); // join a game as soon as the page is ready
 
     socket.on('start', () => {
 	fx.play('klaxon');
@@ -117,7 +127,7 @@ myfleet.commission(new Submarine);
 myfleet.commission(new Frigate);
 myfleet.commission(new Lifeboat);
 
-function rnd_pos () {
+const rnd_pos = () => {
     return Math.floor(Math.random() * boardsize);
 }
 
@@ -135,6 +145,6 @@ myboard.deploy(myfleet);
 
 myfleet.draw();
 
-$('#init').click(() => {
-    sp.start();
-});
+//$('#init').click(() => {
+//    sp.start();
+//});
