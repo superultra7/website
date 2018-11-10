@@ -20,6 +20,7 @@ module.exports = {
         path: path.join(__dirname,'build/assets/'),
         publicPath:'assets/'
     },
+    target: "electron",
     "module": {
 	"rules": [
 	    {

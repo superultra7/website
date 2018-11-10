@@ -8,7 +8,11 @@
   "scripts": {
     "server": "cd server && yarn build",
     "app": "cd app && yarn build",
-    "build": "yarn install && yarn app && yarn server",
+    "build": "yarn install && yarn app",
     "start": "cd app && yarn start"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
   }
 }

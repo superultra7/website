@@ -3,6 +3,12 @@ body {
     color: cornflowerblue;
 }
 
+#splash {
+    position: absolute;
+    top: 0;
+    background: url("gfx/bg-1.jpg");
+}
+
 h1 {
     text-align: center;
     text-transform: uppercase;

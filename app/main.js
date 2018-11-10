@@ -1,24 +1,30 @@
-const electron = require('electron');
-// Module to control application life.
-const { ipcMain } = require('electron');
-const { spawn }   = require("child_process");
-const app = electron.app;
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow;
+import os       from "os";
+import path     from "path";
+import url      from "url";
+import Bonjour  from "bonjour";
+import electron from "electron";
+import Server   from "./server";
 
-const os    = require('os');
-const path  = require('path');
-const url   = require('url');
-const utils = [
-    path.join(__dirname, "utils", os.platform()),
-    "/usr/local/bin",
-    "/opt/local/bin",
-    "/usr/bin",
-    "/bin"].join(path.delimiter);
+const bonjour       = Bonjour();
+const { ipcMain }   = require('electron');
+const { spawn }     = require("child_process");
+const app           = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const port          = 1604 + Math.floor(Math.random()*10);
+const server        = new Server(port);
+
+let servers = [];
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+
+function informServers () {
+    console.log("informing servers", servers);
+    servers.forEach((o) => {
+        mainWindow.webContents.send( 'lan_player', { addr: o.addresses[0], port: o.port } );
+    });
+}
 
 function createWindow () {
     app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
@@ -28,7 +34,7 @@ function createWindow () {
     
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
-	pathname: path.join(__dirname, 'build/index.html'),
+	pathname: path.join(__dirname, 'index.html'),
 	protocol: 'file:',
 	slashes: true
     }));
@@ -43,6 +49,10 @@ function createWindow () {
 	// when you should delete the corresponding element.
 	mainWindow = null
     });
+
+    // reset and resend servers
+    servers = [];
+    informServers();
 }
 
 // This method will be called when Electron has finished
@@ -69,3 +79,16 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+ 
+// advertise an HTTP server on port 3000
+bonjour.publish({
+    name: 'Battleships',
+    type: 'battleships',
+    port: port,
+});
+ 
+// browse for all battleship services
+bonjour.find({ type: 'battleships' }, (service) => {
+    servers.push(service);
+    informServers();
+});

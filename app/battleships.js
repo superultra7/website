@@ -7,6 +7,7 @@ require('webpack-jquery-ui/widgets');
 require('webpack-jquery-ui/effects');
 require('webpack-jquery-ui/dialog');
 */
+import { ipcRenderer } from "electron";
 import io from 'socket.io-client';
 
 import {Battleship, Carrier, Destroyer, Submarine, Frigate, Lifeboat} from "./vessels";
@@ -22,7 +23,38 @@ let boardsize  = 24;
 let myboard    = new Board(boardsize, boardsize, "myboard");
 let theirboard = new Board(boardsize, boardsize, "theirboard");
 let fx         = new Fx();
-let socket     = io.connect("http://localhost:3000/");
+let socket;
+
+ipcRenderer.on("lan_player", (e, data) => {
+    $('#setup_lan').append(`<li>${data.addr}:${data.port} <a data-address="${data.addr}:${data.port}" href="#">connect</a></li>`);
+    $('#setup_lan a').unbind('click').click((e) => {
+	console.log("click", e.target.dataset["address"]);
+	socket = io.connect(`http://${e.target.dataset["address"]}`);
+	
+	socket.on('start', () => {
+	    fx.play('klaxon');
+	    notify('game started');
+	});
+	
+	socket.on('player left', () => {
+	    notify('other player left');
+	});
+	socket.on('turn', (turn) => {
+	    notify(`other player fired ${turn.x},${turn.y}`);
+            myboard.fire(parseInt(turn.x), parseInt(turn.y), (result) => {
+		socket.emit(result ? 'hit' : 'miss', turn);
+	    });
+	});
+	socket.on('hit', (turn) => {
+	    notify(`HIT! ${turn.x},${turn.y}`);
+	    theirboard.mark_cell(turn.x, turn.y, "hit");
+	});
+	socket.on('miss', (turn) => {
+	    notify(`MISS! ${turn.x},${turn.y}`);
+	    theirboard.mark_cell(turn.x, turn.y, "miss");
+	});
+    });
+});
 
 fx.play('klaxon');
 
@@ -91,28 +123,6 @@ $(document).ready(() => {
      */
 //    socket.emit('join', game_id); // join a game as soon as the page is ready
 
-    socket.on('start', () => {
-	fx.play('klaxon');
-	notify('game started');
-    });
-
-    socket.on('player left', () => {
-	notify('other player left');
-    });
-    socket.on('turn', (turn) => {
-	notify(`other player fired ${turn.x},${turn.y}`);
-        myboard.fire(parseInt(turn.x), parseInt(turn.y), (result) => {
-	    socket.emit(result ? 'hit' : 'miss', turn);
-	});
-    });
-    socket.on('hit', (turn) => {
-	notify(`HIT! ${turn.x},${turn.y}`);
-	theirboard.mark_cell(turn.x, turn.y, "hit");
-    });
-    socket.on('miss', (turn) => {
-	notify(`MISS! ${turn.x},${turn.y}`);
-	theirboard.mark_cell(turn.x, turn.y, "miss");
-    });
 });
 
 

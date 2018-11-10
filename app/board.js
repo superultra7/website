@@ -51,6 +51,9 @@ export default class Board {
                     col.dataset.x = x;
                     col.dataset.y = y;
                     col.className = "cell";
+		    col.onclick = () => {
+			console.log("clicked", col.dataset.x, col.dataset.y);
+		    };
                 }
 
                 row.appendChild(col);
