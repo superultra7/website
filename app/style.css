@@ -3,17 +3,30 @@ body {
     color: cornflowerblue;
 }
 
+#splash {
+    position: absolute;
+    top: 0;
+    background: url("gfx/bg-1.jpg");
+}
+
 h1 {
     text-align: center;
     text-transform: uppercase;
     font-family: arial;
 }
 
-.cell {
+.cell, .index {
+    float: left;
     border: 1px solid #eee;
     width: 10px;
     height: 10px;
-    float: left;
+}
+
+.index {
+    font-family: monospace, sans-serif;
+    font-size: 7pt;
+    color: #000;
+    text-align: center;
 }
 
 .cell.hot {
@@ -30,7 +43,8 @@ h1 {
 
 #boardcontainer {
     margin: 0 auto;
-    width: 1024px;
+/*    width: 1024px;*/
+    overflow: auto;
 }
 
 .board, #myfleet {
